@@ -4,9 +4,28 @@ import '../models/product.dart';
 import '../../core/utils/constants.dart';
 
 class ApiService {
+  static ApiService? _instance;
   late final Dio _dio;
   
-  ApiService() {
+  ApiService._internal() {
+    _initializeDio();
+  }
+  
+  factory ApiService() {
+    _instance ??= ApiService._internal();
+    return _instance!;
+  }
+  
+  static ApiService get instance {
+    _instance ??= ApiService._internal();
+    return _instance!;
+  }
+  
+  static void resetInstance() {
+    _instance = null;
+  }
+  
+  void _initializeDio() {
     _dio = Dio(BaseOptions(
       baseUrl: AppConstants.baseUrl,
       connectTimeout: Duration(milliseconds: AppConstants.connectionTimeout),
@@ -17,14 +36,14 @@ class ApiService {
       },
     ));
 
-    // Adicionar interceptor de log
-    _dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-      logPrint: (obj) => debugPrint(obj.toString()),
-    ));
+    if (kDebugMode) {
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        logPrint: (obj) => debugPrint(obj.toString()),
+      ));
+    }
 
-    // Interceptor para tratamento de erros
     _dio.interceptors.add(InterceptorsWrapper(
       onError: (error, handler) {
         debugPrint('API Error: ${error.message}');
@@ -33,7 +52,6 @@ class ApiService {
     ));
   }
   
-  /// Busca todos os produtos
   Future<List<Product>> getProducts() async {
     try {
       final response = await _dio.get(AppConstants.productsEndpoint);
@@ -51,7 +69,6 @@ class ApiService {
     }
   }
   
-  /// Busca produto por ID
   Future<Product> getProductById(int id) async {
     try {
       final response = await _dio.get('${AppConstants.productsEndpoint}/$id');
@@ -68,7 +85,6 @@ class ApiService {
     }
   }
   
-  /// Busca produtos por categoria
   Future<List<Product>> getProductsByCategory(String category) async {
     try {
       final response = await _dio.get('${AppConstants.productsEndpoint}/category/$category');
@@ -86,7 +102,6 @@ class ApiService {
     }
   }
   
-  /// Busca todas as categorias
   Future<List<String>> getCategories() async {
     try {
       final response = await _dio.get('${AppConstants.productsEndpoint}/categories');

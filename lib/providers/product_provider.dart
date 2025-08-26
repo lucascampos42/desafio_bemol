@@ -13,7 +13,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
 
   ProductProvider({
     ApiService? apiService,
-  }) : _apiService = apiService ?? ApiService(),
+  }) : _apiService = apiService ?? ApiService.instance,
        _searchDebouncer = Debouncer(milliseconds: AppConstants.searchDebounceMs),
        super(ProductState.initial()) {
     _init();

@@ -1,16 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
-import 'providers/product_state.dart';
+import 'data/services/api_service.dart';
 import 'ui/screens/home/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Inicializar SharedPreferences
-  await SharedPreferences.getInstance();
+  await _initializeServices();
   
   runApp(const DesafioBemolApp());
+}
+
+Future<void> _initializeServices() async {
+  try {
+    await SharedPreferences.getInstance();
+    
+    ApiService.instance;
+    
+    debugPrint('✅ Serviços inicializados com sucesso');
+  } catch (e) {
+    debugPrint('❌ Erro ao inicializar serviços: $e');
+  }
 }
 
 class DesafioBemolApp extends StatelessWidget {
