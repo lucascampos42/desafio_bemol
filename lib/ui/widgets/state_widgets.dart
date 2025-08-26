@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../core/utils/constants.dart';
 import '../../core/theme/app_theme.dart';
 
-/// Widget para exibir loading
 class LoadingWidget extends StatelessWidget {
   final String? message;
   
@@ -31,7 +30,6 @@ class LoadingWidget extends StatelessWidget {
   }
 }
 
-/// Widget para exibir erro
 class CustomErrorWidget extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
@@ -80,7 +78,6 @@ class CustomErrorWidget extends StatelessWidget {
   }
 }
 
-/// Widget para exibir estado vazio
 class EmptyWidget extends StatelessWidget {
   final String message;
   final String? subtitle;
@@ -137,7 +134,6 @@ class EmptyWidget extends StatelessWidget {
   }
 }
 
-/// Widget para exibir sem conexão
 class NoConnectionWidget extends StatelessWidget {
   final VoidCallback? onRetry;
   
@@ -146,14 +142,13 @@ class NoConnectionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CustomErrorWidget(
-      message: AppConstants.errorNetwork,
+      message: AppConstants.networkError,
       icon: Icons.wifi_off,
       onRetry: onRetry,
     );
   }
 }
 
-/// Widget para busca sem resultados
 class NoSearchResultsWidget extends StatelessWidget {
   final String searchQuery;
   final VoidCallback? onClearSearch;
@@ -167,14 +162,14 @@ class NoSearchResultsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return EmptyWidget(
-      message: 'Nenhum resultado encontrado',
-      subtitle: 'Não encontramos produtos para "$searchQuery"',
+      message: 'No results found',
+      subtitle: 'We couldn\'t find products for "$searchQuery"',
       icon: Icons.search_off,
       action: onClearSearch != null
           ? TextButton.icon(
               onPressed: onClearSearch,
               icon: const Icon(Icons.clear),
-              label: const Text('Limpar busca'),
+              label: const Text('Clear search'),
             )
           : null,
     );
