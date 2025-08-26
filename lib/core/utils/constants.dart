@@ -21,10 +21,10 @@ class AppConstants {
   static const double borderRadius = 12.0;
   static const double smallBorderRadius = 8.0;
   
-  // Mensagens
-  static const String errorGeneric = 'Algo deu errado. Tente novamente.';
-  static const String errorNetwork = 'Erro de conexão. Verifique sua internet.';
-  static const String errorNotFound = 'Produto não encontrado.';
-  static const String emptyFavorites = 'Nenhum produto favoritado ainda.';
-  static const String emptySearch = 'Nenhum produto encontrado.';
+  // Messages
+  static const String genericError = 'Something went wrong. Please try again.';
+  static const String networkError = 'Connection error. Check your internet.';
+  static const String notFoundError = 'Product not found.';
+  static const String emptyFavoritesMessage = 'No favorite products yet.';
+  static const String emptySearchMessage = 'No products found.';
 }
