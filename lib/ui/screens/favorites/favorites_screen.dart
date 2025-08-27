@@ -154,14 +154,8 @@ class FavoritesScreen extends StatelessWidget {
   }
 
   Widget _buildFavoritesList(BuildContext context, state) {
-    return GridView.builder(
-      padding: const EdgeInsets.all(AppConstants.smallPadding),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.7,
-        crossAxisSpacing: AppConstants.smallPadding,
-        mainAxisSpacing: AppConstants.smallPadding,
-      ),
+    return ListView.builder(
+      padding: EdgeInsets.zero,
       itemCount: state.favorites.length,
       itemBuilder: (context, index) {
         final product = state.favorites[index];
