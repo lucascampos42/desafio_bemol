@@ -31,14 +31,14 @@ class FavoritesScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Limpar Favoritos'),
+          title: const Text('Clear Favorites'),
           content: const Text(
-            'Tem certeza que deseja remover todos os produtos dos favoritos?',
+            'Are you sure you want to remove all products from favorites?',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -46,7 +46,7 @@ class FavoritesScreen extends StatelessWidget {
                 _clearAllFavorites();
               },
               child: const Text(
-                'Limpar',
+                'Clear',
                 style: TextStyle(color: Colors.red),
               ),
             ),
@@ -67,7 +67,7 @@ class FavoritesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favoritos'),
+        title: const Text('Favorites'),
         actions: [
           ValueListenableBuilder(
             valueListenable: productProvider,
@@ -87,7 +87,7 @@ class FavoritesScreen extends StatelessWidget {
                       children: [
                         Icon(Icons.clear_all, color: Colors.red),
                         SizedBox(width: 8),
-                        Text('Limpar todos'),
+                        Text('Clear all'),
                       ],
                     ),
                   ),
@@ -101,25 +101,26 @@ class FavoritesScreen extends StatelessWidget {
         valueListenable: productProvider,
         builder: (context, state, child) {
           if (state.isLoadingFavorites) {
-            return const LoadingWidget(message: 'Carregando favoritos...');
+            return const LoadingWidget(message: 'Loading favorites...');
           }
 
           if (state.hasError) {
             return CustomErrorWidget(
               message: state.error!,
               onRetry: productProvider.loadFavorites,
+              useErrorImage: false, // Não usar imagem de erro na tela de favoritos
             );
           }
 
           if (!state.hasFavorites) {
             return EmptyWidget(
-              message: AppConstants.emptyFavorites,
-              subtitle: 'Adicione produtos aos favoritos para vê-los aqui',
+              message: 'No favorites found',
+              subtitle: 'Add products to favorites to see them here',
               icon: Icons.favorite_border,
               action: ElevatedButton.icon(
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.shopping_bag),
-                label: const Text('Explorar Produtos'),
+                label: const Text('Explore Products'),
               ),
             );
           }
@@ -134,7 +135,7 @@ class FavoritesScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(AppConstants.defaultPadding),
                   color: Colors.grey[50],
                   child: Text(
-                    '${state.favorites.length} produto${state.favorites.length != 1 ? 's' : ''} favoritado${state.favorites.length != 1 ? 's' : ''}',
+                    '${state.favorites.length} favorite product${state.favorites.length != 1 ? 's' : ''}',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
@@ -179,14 +180,14 @@ class FavoritesScreen extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Remover Favorito'),
+          title: const Text('Remove Favorite'),
           content: Text(
-            'Deseja remover "${product.title}" dos favoritos?',
+            'Do you want to remove "${product.title}" from favorites?',
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancelar'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
@@ -196,16 +197,16 @@ class FavoritesScreen extends StatelessWidget {
                 // Mostra snackbar de confirmação
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: const Text('Produto removido dos favoritos'),
+                    content: const Text('Product removed from favorites'),
                     action: SnackBarAction(
-                      label: 'Desfazer',
+                      label: 'Undo',
                       onPressed: () => productProvider.toggleFavorite(product),
                     ),
                   ),
                 );
               },
               child: const Text(
-                'Remover',
+                'Remove',
                 style: TextStyle(color: Colors.red),
               ),
             ),

@@ -19,13 +19,21 @@ class LocalStorage {
   /// Salva lista de produtos favoritos
   Future<bool> saveFavorites(List<Product> favorites) async {
     try {
+      print('💾 Saving ${favorites.length} favorites to SharedPreferences...');
       final List<String> favoritesJson = favorites
           .map((product) => jsonEncode(product.toJson()))
           .toList();
       
-      return await _prefs!.setStringList(AppConstants.favoritesKey, favoritesJson);
+      final result = await _prefs!.setStringList(AppConstants.favoritesKey, favoritesJson);
+      print('💾 Save result: $result');
+      
+      // Verificar se foi salvo
+      final saved = _prefs!.getStringList(AppConstants.favoritesKey);
+      print('💾 Verification - saved items count: ${saved?.length ?? 0}');
+      
+      return result;
     } catch (e) {
-      print('Erro ao salvar favoritos: $e');
+      print('❌ Error saving favorites: $e');
       return false;
     }
   }
@@ -43,7 +51,7 @@ class LocalStorage {
           .map((json) => Product.fromJson(jsonDecode(json)))
           .toList();
     } catch (e) {
-      print('Erro ao carregar favoritos: $e');
+      print('Error loading favorites: $e');
       return [];
     }
   }
@@ -61,7 +69,7 @@ class LocalStorage {
       
       return true; // Já estava nos favoritos
     } catch (e) {
-      print('Erro ao adicionar favorito: $e');
+      print('Error adding favorite: $e');
       return false;
     }
   }
@@ -73,7 +81,7 @@ class LocalStorage {
       favorites.removeWhere((product) => product.id == productId);
       return await saveFavorites(favorites);
     } catch (e) {
-      print('Erro ao remover favorito: $e');
+      print('Error removing favorite: $e');
       return false;
     }
   }
@@ -84,7 +92,7 @@ class LocalStorage {
       final List<Product> favorites = await loadFavorites();
       return favorites.any((product) => product.id == productId);
     } catch (e) {
-      print('Erro ao verificar favorito: $e');
+      print('Error checking favorite: $e');
       return false;
     }
   }
@@ -94,7 +102,7 @@ class LocalStorage {
     try {
       return await _prefs!.remove(AppConstants.favoritesKey);
     } catch (e) {
-      print('Erro ao limpar favoritos: $e');
+      print('Error clearing favorites: $e');
       return false;
     }
   }
@@ -105,7 +113,7 @@ class LocalStorage {
       final List<Product> favorites = await loadFavorites();
       return favorites.map((product) => product.id).toSet();
     } catch (e) {
-      print('Erro ao obter IDs dos favoritos: $e');
+      print('Error getting favorite IDs: $e');
       return <int>{};
     }
   }

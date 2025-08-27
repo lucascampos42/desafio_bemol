@@ -81,7 +81,7 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            'Imagem indisponível',
+                            'Image unavailable',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey[600],
@@ -208,7 +208,7 @@ class ProductDetailScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '${product.rating.count} avaliações',
+                  '${product.rating.count} reviews',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 13,
@@ -223,7 +223,7 @@ class ProductDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                'Preço',
+                'Price',
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 12,
@@ -250,7 +250,7 @@ class ProductDetailScreen extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Descrição',
+          'Description',
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
             color: AppTheme.textPrimary,
@@ -315,7 +315,7 @@ class ProductDetailScreen extends StatelessWidget {
               size: 24,
             ),
             label: Text(
-              isFavorite ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos',
+              isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,

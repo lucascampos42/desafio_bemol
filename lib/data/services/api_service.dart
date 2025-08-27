@@ -60,12 +60,12 @@ class ApiService {
         final List<dynamic> data = response.data;
         return data.map((json) => Product.fromJson(json)).toList();
       } else {
-        throw ApiException('Erro ao carregar produtos: ${response.statusCode}');
+        throw ApiException('Error loading products: ${response.statusCode}');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
     } catch (e) {
-      throw ApiException('Erro inesperado: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
   
@@ -76,12 +76,12 @@ class ApiService {
       if (response.statusCode == 200) {
         return Product.fromJson(response.data);
       } else {
-        throw ApiException('Produto não encontrado');
+        throw ApiException('Product not found');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
     } catch (e) {
-      throw ApiException('Erro inesperado: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
   
@@ -93,12 +93,12 @@ class ApiService {
         final List<dynamic> data = response.data;
         return data.map((json) => Product.fromJson(json)).toList();
       } else {
-        throw ApiException('Erro ao carregar produtos da categoria');
+        throw ApiException('Error loading category products');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
     } catch (e) {
-      throw ApiException('Erro inesperado: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
   
@@ -110,12 +110,12 @@ class ApiService {
         final List<dynamic> data = response.data;
         return data.cast<String>();
       } else {
-        throw ApiException('Erro ao carregar categorias');
+        throw ApiException('Error loading categories');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
     } catch (e) {
-      throw ApiException('Erro inesperado: $e');
+      throw ApiException('Unexpected error: $e');
     }
   }
   
@@ -125,17 +125,17 @@ class ApiService {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.sendTimeout:
-        return ApiException(AppConstants.errorNetwork);
+        return ApiException(AppConstants.networkError);
       case DioExceptionType.badResponse:
         if (e.response?.statusCode == 404) {
-          return ApiException(AppConstants.errorNotFound);
+          return ApiException(AppConstants.notFoundError);
         }
-        return ApiException('Erro do servidor: ${e.response?.statusCode}');
+        return ApiException('Server error: ${e.response?.statusCode}');
       case DioExceptionType.cancel:
-        return ApiException('Requisição cancelada');
+        return ApiException('Request cancelled');
       case DioExceptionType.unknown:
       default:
-        return ApiException(AppConstants.errorNetwork);
+        return ApiException(AppConstants.networkError);
     }
   }
 }

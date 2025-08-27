@@ -34,13 +34,23 @@ class CustomErrorWidget extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
   final IconData? icon;
+  final bool useErrorImage;
   
   const CustomErrorWidget({
     super.key,
     required this.message,
     this.onRetry,
     this.icon,
+    this.useErrorImage = true,
   });
+  
+  bool get _isConnectionError {
+    final lowerMessage = message.toLowerCase();
+    return lowerMessage.contains('connection') || 
+           lowerMessage.contains('network') ||
+           lowerMessage.contains('internet') ||
+           lowerMessage.contains('apiexception');
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -50,25 +60,44 @@ class CustomErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon ?? Icons.error_outline,
-              size: 64,
-              color: AppTheme.errorColor,
-            ),
-            const SizedBox(height: AppConstants.defaultPadding),
-            Text(
-              message,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: AppTheme.textPrimary,
+            if (useErrorImage)
+              Image.asset(
+                'assets/images/erro.png',
+                width: 120,
+                height: 120,
+                fit: BoxFit.contain,
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    _isConnectionError ? Icons.wifi_off : (icon ?? Icons.error_outline),
+                    size: 64,
+                    color: AppTheme.errorColor,
+                  );
+                },
+              )
+            else
+              Icon(
+                _isConnectionError ? Icons.wifi_off : (icon ?? Icons.error_outline),
+                size: 64,
+                color: AppTheme.errorColor,
               ),
-              textAlign: TextAlign.center,
-            ),
+            // Só mostra textos se NÃO for erro de conexão
+            if (!_isConnectionError) ...[
+              const SizedBox(height: AppConstants.defaultPadding),
+              Text(
+                message,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
             if (onRetry != null) ...[
               const SizedBox(height: AppConstants.largePadding),
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh),
-                label: const Text('Tentar Novamente'),
+                label: const Text('Try Again'),
               ),
             ],
           ],

@@ -10,6 +10,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   final ApiService _apiService;
   LocalStorage? _localStorage;
   final Debouncer _searchDebouncer;
+  bool _isInitialized = false;
 
   ProductProvider({
     ApiService? apiService,
@@ -19,15 +20,38 @@ class ProductProvider extends ValueNotifier<ProductState> {
     _init();
   }
 
-  /// Inicialização do provider
-  Future<void> _init() async {
-    _localStorage = await LocalStorage.getInstance();
-    await loadFavorites();
-    await loadProducts();
-    await loadCategories();
+  bool get isInitialized => _isInitialized;
+
+  Future<void> ensureInitialized() async {
+    if (!_isInitialized) {
+      await _init();
+    }
   }
 
-  /// Carrega todos os produtos
+  /// Inicialização do provider
+  Future<void> _init() async {
+    if (_isInitialized) return;
+    
+    try {
+      _localStorage = await LocalStorage.getInstance();
+      await loadFavorites();
+      await loadProducts();
+      await loadCategories();
+      _isInitialized = true;
+    } catch (e) {
+      print('Error during initialization: $e');
+      // Garante que pelo menos o localStorage seja inicializado
+      try {
+        _localStorage ??= await LocalStorage.getInstance();
+        await loadFavorites();
+        _isInitialized = true;
+      } catch (localError) {
+        print('Error initializing local storage: $localError');
+        _isInitialized = false;
+      }
+    }
+  }
+
   Future<void> loadProducts() async {
     if (value.isLoading) return;
     
@@ -55,11 +79,10 @@ class ProductProvider extends ValueNotifier<ProductState> {
       value = value.copyWith(categories: categories);
     } catch (e) {
       // Erro silencioso para categorias
-      print('Erro ao carregar categorias: $e');
+      print('Error loading categories: $e');
     }
   }
 
-  /// Carrega favoritos do storage local
   Future<void> loadFavorites() async {
     value = value.copyWith(isLoadingFavorites: true);
     
@@ -72,16 +95,17 @@ class ProductProvider extends ValueNotifier<ProductState> {
         favorites: favorites,
         favoriteIds: favoriteIds,
         isLoadingFavorites: false,
+        clearError: true,
       );
     } catch (e) {
+      print('Error loading favorites: $e');
       value = value.copyWith(
         isLoadingFavorites: false,
-        error: 'Erro ao carregar favoritos: $e',
+        error: 'Error loading favorites: $e',
       );
     }
   }
 
-  /// Busca produtos com debounce
   void searchProducts(String query) {
     _searchDebouncer.run(() {
       value = value.copyWith(
@@ -91,16 +115,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
     });
   }
 
-  /// Filtra por categoria
-  void filterByCategory(String? category) {
-    value = value.copyWith(
-      selectedCategory: category,
-      clearCategory: category == null,
-      filteredProducts: _filterProducts(value.products),
-    );
-  }
-
-  /// Limpa filtros
   void clearFilters() {
     value = value.copyWith(
       searchQuery: '',
@@ -113,11 +127,17 @@ class ProductProvider extends ValueNotifier<ProductState> {
   /// Adiciona/remove produto dos favoritos
   Future<void> toggleFavorite(Product product) async {
     try {
+      print('🔄 toggleFavorite called for product: ${product.title} (ID: ${product.id})');
       _localStorage ??= await LocalStorage.getInstance();
       final isFavorite = value.favoriteIds.contains(product.id);
+      print('📋 Current favorites count: ${value.favorites.length}');
+      print('❤️ Is currently favorite: $isFavorite');
       
       if (isFavorite) {
-        await _localStorage!.removeFromFavorites(product.id);
+        print('➖ Removing from favorites...');
+        final success = await _localStorage!.removeFromFavorites(product.id);
+        print('✅ Remove operation success: $success');
+        
         final newFavorites = value.favorites.where((p) => p.id != product.id).toList();
         final newFavoriteIds = Set<int>.from(value.favoriteIds)..remove(product.id);
         
@@ -125,8 +145,12 @@ class ProductProvider extends ValueNotifier<ProductState> {
           favorites: newFavorites,
           favoriteIds: newFavoriteIds,
         );
+        print('📊 New favorites count: ${newFavorites.length}');
       } else {
-        await _localStorage!.addToFavorites(product);
+        print('➕ Adding to favorites...');
+        final success = await _localStorage!.addToFavorites(product);
+        print('✅ Add operation success: $success');
+        
         final newFavorites = [...value.favorites, product];
         final newFavoriteIds = Set<int>.from(value.favoriteIds)..add(product.id);
         
@@ -134,18 +158,22 @@ class ProductProvider extends ValueNotifier<ProductState> {
           favorites: newFavorites,
           favoriteIds: newFavoriteIds,
         );
+        print('📊 New favorites count: ${newFavorites.length}');
       }
+      
+      final savedFavorites = await _localStorage!.loadFavorites();
+      print('💾 Saved favorites count in storage: ${savedFavorites.length}');
+      
     } catch (e) {
-      value = value.copyWith(error: 'Erro ao atualizar favoritos: $e');
+      print('❌ Error in toggleFavorite: $e');
+      value = value.copyWith(error: 'Error updating favorites: $e');
     }
   }
 
-  /// Verifica se produto é favorito
   bool isFavorite(int productId) {
     return value.favoriteIds.contains(productId);
   }
 
-  /// Busca produto por ID
   Product? getProductById(int id) {
     try {
       return value.products.firstWhere((product) => product.id == id);
@@ -154,7 +182,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
 
-  /// Recarrega dados
   Future<void> refresh() async {
     await Future.wait([
       loadProducts(),
@@ -163,18 +190,10 @@ class ProductProvider extends ValueNotifier<ProductState> {
     ]);
   }
 
-  /// Filtra produtos baseado na busca e categoria
+  
   List<Product> _filterProducts(List<Product> products) {
     var filtered = products;
     
-    // Filtro por categoria
-    if (value.selectedCategory != null) {
-      filtered = filtered.where((product) => 
-        product.category.toLowerCase() == value.selectedCategory!.toLowerCase()
-      ).toList();
-    }
-    
-    // Filtro por busca
     if (value.searchQuery.isNotEmpty) {
       final query = value.searchQuery.toLowerCase();
       filtered = filtered.where((product) => 
@@ -187,7 +206,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
     return filtered;
   }
 
-  /// Limpa erro
   void clearError() {
     value = value.copyWith(clearError: true);
   }

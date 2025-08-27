@@ -18,9 +18,9 @@ Future<void> _initializeServices() async {
     
     ApiService.instance;
     
-    debugPrint('✅ Serviços inicializados com sucesso');
+    debugPrint('✅ Services initialized successfully');
   } catch (e) {
-    debugPrint('❌ Erro ao inicializar serviços: $e');
+    debugPrint('❌ Error initializing services: $e');
   }
 }
 
@@ -30,7 +30,7 @@ class DesafioBemolApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Desafio Bemol',
+      title: 'Bemol Challenge',
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       home: const HomeScreen(),

@@ -17,7 +17,6 @@ class Helpers {
     text != null && text.trim().isNotEmpty;
 }
 
-/// Classe para debounce em buscas
 class Debouncer {
   final int milliseconds;
   Timer? _timer;
