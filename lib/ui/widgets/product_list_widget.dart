@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../data/models/product.dart';
 import '../../providers/product_state.dart';
-import '../../core/utils/constants.dart';
 import 'state_widgets.dart';
 import 'product_card.dart';
 

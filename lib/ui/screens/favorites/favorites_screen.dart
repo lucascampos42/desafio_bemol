@@ -107,8 +107,8 @@ class FavoritesScreen extends StatelessWidget {
           if (state.hasError) {
             return CustomErrorWidget(
               message: state.error!,
-              onRetry: productProvider.loadFavorites,
-              useErrorImage: false, // Não usar imagem de erro na tela de favoritos
+              onRetry: productProvider.loadFavoritesOnly,
+              useErrorImage: false,
             );
           }
 
@@ -126,7 +126,7 @@ class FavoritesScreen extends StatelessWidget {
           }
 
           return RefreshIndicator(
-            onRefresh: productProvider.loadFavorites,
+            onRefresh: productProvider.loadFavoritesOnly,
             child: Column(
               children: [
                 // Header com contador

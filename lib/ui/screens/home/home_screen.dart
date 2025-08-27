@@ -25,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _productProvider = ProductProvider();
     _searchController.addListener(_onSearchChanged);
+    // Inicializa com dados da API apenas na HomeScreen
+    _productProvider.initializeWithApi();
   }
 
   @override

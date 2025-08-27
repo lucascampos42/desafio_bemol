@@ -35,8 +35,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     try {
       _localStorage = await LocalStorage.getInstance();
       await loadFavorites();
-      await loadProducts();
-      await loadCategories();
+      // Não carrega produtos automaticamente - só quando necessário
       _isInitialized = true;
     } catch (e) {
       print('Error during initialization: $e');
@@ -49,6 +48,15 @@ class ProductProvider extends ValueNotifier<ProductState> {
         print('Error initializing local storage: $localError');
         _isInitialized = false;
       }
+    }
+  }
+
+  /// Inicialização completa com dados da API (para HomeScreen)
+  Future<void> initializeWithApi() async {
+    await ensureInitialized();
+    if (value.products.isEmpty) {
+      await loadProducts();
+      await loadCategories();
     }
   }
 
@@ -102,6 +110,30 @@ class ProductProvider extends ValueNotifier<ProductState> {
       value = value.copyWith(
         isLoadingFavorites: false,
         error: 'Error loading favorites: $e',
+      );
+    }
+  }
+
+  /// Carrega favoritos sem verificar conexão (para tela de favoritos)
+  Future<void> loadFavoritesOnly() async {
+    value = value.copyWith(isLoadingFavorites: true, clearError: true);
+    
+    try {
+      _localStorage ??= await LocalStorage.getInstance();
+      final favorites = await _localStorage!.loadFavorites();
+      final favoriteIds = favorites.map((p) => p.id).toSet();
+      
+      value = value.copyWith(
+        favorites: favorites,
+        favoriteIds: favoriteIds,
+        isLoadingFavorites: false,
+      );
+      print('✅ Loaded ${favorites.length} favorites from local storage');
+    } catch (e) {
+      print('❌ Error loading favorites from local storage: $e');
+      value = value.copyWith(
+        isLoadingFavorites: false,
+        error: 'Error loading favorites from local storage: $e',
       );
     }
   }
