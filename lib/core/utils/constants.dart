@@ -11,7 +11,7 @@ class AppConstants {
   static const int receiveTimeout = 30000;
   
   // Debounce
-  static const int searchDebounceMs = 300;
+  static const int searchDebounceMs = 600;
   
   // UI
   static const double defaultPadding = 16.0;

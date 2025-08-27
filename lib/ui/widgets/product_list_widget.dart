@@ -59,6 +59,7 @@ class ProductListWidget extends StatelessWidget {
       return const EmptyWidget(
         message: 'No products in this category',
         icon: Icons.category_outlined,
+        useErrorImageOnly: true,
       );
     }
 

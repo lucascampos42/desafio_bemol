@@ -112,6 +112,7 @@ class EmptyWidget extends StatelessWidget {
   final String? subtitle;
   final IconData? icon;
   final Widget? action;
+  final bool useErrorImageOnly;
   
   const EmptyWidget({
     super.key,
@@ -119,10 +120,30 @@ class EmptyWidget extends StatelessWidget {
     this.subtitle,
     this.icon,
     this.action,
+    this.useErrorImageOnly = false,
   });
   
   @override
   Widget build(BuildContext context) {
+    // Se useErrorImageOnly for true, mostra apenas a imagem erro.png
+    if (useErrorImageOnly) {
+      return Center(
+        child: Image.asset(
+          'assets/images/erro.png',
+          width: 120,
+          height: 120,
+          fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(
+              icon ?? Icons.inbox_outlined,
+              size: 64,
+              color: AppTheme.textHint,
+            );
+          },
+        ),
+      );
+    }
+    
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppConstants.largePadding),
