@@ -28,18 +28,15 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
 
-  /// Inicialização do provider
   Future<void> _init() async {
     if (_isInitialized) return;
     
     try {
       _localStorage = await LocalStorage.getInstance();
       await loadFavorites();
-      // Não carrega produtos automaticamente - só quando necessário
       _isInitialized = true;
     } catch (e) {
       print('Error during initialization: $e');
-      // Garante que pelo menos o localStorage seja inicializado
       try {
         _localStorage ??= await LocalStorage.getInstance();
         await loadFavorites();
@@ -51,7 +48,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
 
-  /// Inicialização completa com dados da API (para HomeScreen)
   Future<void> initializeWithApi() async {
     await ensureInitialized();
     if (value.products.isEmpty) {
@@ -229,9 +225,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     if (value.searchQuery.isNotEmpty) {
       final query = value.searchQuery.toLowerCase();
       filtered = filtered.where((product) => 
-        product.title.toLowerCase().contains(query) ||
-        product.description.toLowerCase().contains(query) ||
-        product.category.toLowerCase().contains(query)
+        product.title.toLowerCase().contains(query)
       ).toList();
     }
     

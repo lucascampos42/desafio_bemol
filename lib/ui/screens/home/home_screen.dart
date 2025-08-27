@@ -19,14 +19,35 @@ class _HomeScreenState extends State<HomeScreen> {
   late ProductProvider _productProvider;
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  bool _isInitializing = true;
 
   @override
   void initState() {
     super.initState();
     _productProvider = ProductProvider();
     _searchController.addListener(_onSearchChanged);
-    // Inicializa com dados da API apenas na HomeScreen
-    _productProvider.initializeWithApi();
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    try {
+      // Inicializa apenas o provider (localStorage)
+      await _productProvider.ensureInitialized();
+      
+      // Tenta carregar dados da API de forma não bloqueante
+      _productProvider.initializeWithApi().catchError((error) {
+        // Se falhar, continua com dados locais
+        debugPrint('Failed to load API data: $error');
+      });
+    } catch (e) {
+      debugPrint('Error during app initialization: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isInitializing = false;
+        });
+      }
+    }
   }
 
   @override
@@ -100,34 +121,45 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: SafeArea(
-        child: ValueListenableBuilder(
-          valueListenable: _productProvider,
-          builder: (context, state, child) {
-            return RefreshIndicator(
-              onRefresh: _productProvider.refresh,
-              child: Column(
-                children: [
-                  SearchBarWidget(
-                    controller: _searchController,
-                    isSearching: state.isSearching,
-                    onClear: _clearFilters,
-                  ),
-                  Expanded(
-                    child: ProductListWidget(
-                      state: state,
-                      scrollController: _scrollController,
-                      onProductTap: _navigateToProductDetail,
-                      onFavoriteToggle: _productProvider.toggleFavorite,
-                      isFavorite: _productProvider.isFavorite,
-                      onRefresh: _productProvider.refresh,
-                      onClearSearch: _clearFilters,
+        child: _isInitializing
+            ? const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Initializing app...'),
+                  ],
+                ),
+              )
+            : ValueListenableBuilder(
+                valueListenable: _productProvider,
+                builder: (context, state, child) {
+                  return RefreshIndicator(
+                    onRefresh: _productProvider.refresh,
+                    child: Column(
+                      children: [
+                        SearchBarWidget(
+                          controller: _searchController,
+                          isSearching: state.isSearching,
+                          onClear: _clearFilters,
+                        ),
+                        Expanded(
+                          child: ProductListWidget(
+                            state: state,
+                            scrollController: _scrollController,
+                            onProductTap: _navigateToProductDetail,
+                            onFavoriteToggle: _productProvider.toggleFavorite,
+                            isFavorite: _productProvider.isFavorite,
+                            onRefresh: _productProvider.refresh,
+                            onClearSearch: _clearFilters,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }

@@ -7,11 +7,11 @@ class AppConstants {
   static const String favoritesKey = 'favorites';
   
   // Timeouts
-  static const int connectionTimeout = 30000; // 30 segundos
-  static const int receiveTimeout = 30000; // 30 segundos
+  static const int connectionTimeout = 30000;
+  static const int receiveTimeout = 30000;
   
   // Debounce
-  static const int searchDebounceMs = 500; // 500ms para busca
+  static const int searchDebounceMs = 300;
   
   // UI
   static const double defaultPadding = 16.0;
@@ -23,8 +23,5 @@ class AppConstants {
   
   // Messages
   static const String genericError = 'Something went wrong. Please try again.';
-  static const String networkError = 'Connection error. Check your internet.';
   static const String notFoundError = 'Product not found.';
-  static const String emptyFavoritesMessage = 'No favorite products yet.';
-  static const String emptySearchMessage = 'No products found.';
 }

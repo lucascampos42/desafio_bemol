@@ -163,20 +163,7 @@ class EmptyWidget extends StatelessWidget {
   }
 }
 
-class NoConnectionWidget extends StatelessWidget {
-  final VoidCallback? onRetry;
-  
-  const NoConnectionWidget({super.key, this.onRetry});
-  
-  @override
-  Widget build(BuildContext context) {
-    return CustomErrorWidget(
-      message: AppConstants.networkError,
-      icon: Icons.wifi_off,
-      onRetry: onRetry,
-    );
-  }
-}
+
 
 class NoSearchResultsWidget extends StatelessWidget {
   final String searchQuery;

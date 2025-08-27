@@ -122,10 +122,6 @@ class ApiService {
   /// Trata erros do Dio
   ApiException _handleDioError(DioException e) {
     switch (e.type) {
-      case DioExceptionType.connectionTimeout:
-      case DioExceptionType.receiveTimeout:
-      case DioExceptionType.sendTimeout:
-        return ApiException(AppConstants.networkError);
       case DioExceptionType.badResponse:
         if (e.response?.statusCode == 404) {
           return ApiException(AppConstants.notFoundError);
@@ -133,14 +129,19 @@ class ApiService {
         return ApiException('Server error: ${e.response?.statusCode}');
       case DioExceptionType.cancel:
         return ApiException('Request cancelled');
+      case DioExceptionType.connectionTimeout:
+        return ApiException('Connection timeout');
+      case DioExceptionType.receiveTimeout:
+        return ApiException('Receive timeout');
+      case DioExceptionType.sendTimeout:
+        return ApiException('Send timeout');
       case DioExceptionType.unknown:
       default:
-        return ApiException(AppConstants.networkError);
+        return ApiException(AppConstants.genericError);
     }
   }
 }
 
-/// Exceção customizada para erros da API
 class ApiException implements Exception {
   final String message;
   

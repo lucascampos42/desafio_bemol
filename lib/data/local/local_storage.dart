@@ -9,7 +9,6 @@ class LocalStorage {
   
   LocalStorage._();
   
-  /// Singleton instance
   static Future<LocalStorage> getInstance() async {
     _instance ??= LocalStorage._();
     _prefs ??= await SharedPreferences.getInstance();
@@ -67,7 +66,7 @@ class LocalStorage {
         return await saveFavorites(favorites);
       }
       
-      return true; // Já estava nos favoritos
+      return true;
     } catch (e) {
       print('Error adding favorite: $e');
       return false;
@@ -117,4 +116,6 @@ class LocalStorage {
       return <int>{};
     }
   }
+
+
 }

@@ -53,7 +53,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
           controller: widget.controller,
           focusNode: _focusNode,
           decoration: InputDecoration(
-            hintText: 'Search Anything...',
+            hintText: 'Search Products...',
             prefixIcon: GestureDetector(
               onTap: () {
                 _focusNode.requestFocus();
