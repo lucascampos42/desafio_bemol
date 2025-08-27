@@ -70,14 +70,11 @@ class ProductListWidget extends StatelessWidget {
       itemCount: state.filteredProducts.length,
       itemBuilder: (context, index) {
         final product = state.filteredProducts[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppConstants.defaultPadding),
-          child: ProductCard(
-            product: product,
-            isFavorite: isFavorite(product.id),
-            onTap: () => onProductTap(product),
-            onFavoriteToggle: () => onFavoriteToggle(product),
-          ),
+        return ProductCard(
+          product: product,
+          isFavorite: isFavorite(product.id),
+          onTap: () => onProductTap(product),
+          onFavoriteToggle: () => onFavoriteToggle(product),
         );
       },
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/utils/constants.dart';
 
-class SearchBarWidget extends StatelessWidget {
+class SearchBarWidget extends StatefulWidget {
   final TextEditingController controller;
   final bool isSearching;
   final VoidCallback onClear;
@@ -12,6 +12,25 @@ class SearchBarWidget extends StatelessWidget {
     required this.isSearching,
     required this.onClear,
   });
+
+  @override
+  State<SearchBarWidget> createState() => _SearchBarWidgetState();
+}
+
+class _SearchBarWidgetState extends State<SearchBarWidget> {
+  late FocusNode _focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +50,19 @@ class SearchBarWidget extends StatelessWidget {
           ],
         ),
         child: TextField(
-          controller: controller,
+          controller: widget.controller,
+          focusNode: _focusNode,
           decoration: InputDecoration(
-            hintText: 'Search products...',
-            prefixIcon: const Icon(Icons.search, color: Colors.grey),
-            suffixIcon: isSearching
+            hintText: 'Search Anything...',
+            prefixIcon: GestureDetector(
+              onTap: () {
+                _focusNode.requestFocus();
+              },
+              child: const Icon(Icons.search, color: Color.fromARGB(255, 56, 56, 56)),
+            ),
+            suffixIcon: widget.isSearching
                 ? IconButton(
-                    onPressed: onClear,
+                    onPressed: widget.onClear,
                     icon: const Icon(Icons.clear),
                   )
                 : null,

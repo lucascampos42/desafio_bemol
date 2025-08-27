@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../data/models/product.dart';
 import '../../core/utils/helpers.dart';
 import '../../core/utils/constants.dart';
@@ -20,28 +21,26 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Color.fromARGB(255, 235, 234, 234),
+            width: 0.5,
+          ),
+        ),
       ),
-      margin: const EdgeInsets.all(AppConstants.smallPadding),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppConstants.borderRadius),
         child: Padding(
           padding: const EdgeInsets.all(AppConstants.defaultPadding),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Imagem do produto (110x110) à esquerda
               Container(
-                height: 110,
-                width: 110,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppConstants.smallBorderRadius),
-                  color: Colors.grey[50],
-                ),
+                margin: const EdgeInsets.only(top: 12),
+                height: 120,
+                width: 120,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(AppConstants.smallBorderRadius),
                   child: Image.network(
@@ -82,25 +81,24 @@ class ProductCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AppConstants.defaultPadding),
-              // Conteúdo à direita da imagem
               Expanded(
                 child: SizedBox(
-                  height: 110,
+                  height: 146,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Primeira linha: Nome do produto
-                      Text(
-                        Helpers.truncateText(product.title, 45),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 14,
-                          color: AppTheme.textPrimary,
-                          height: 1.2,
+                      Container(
+                        margin: const EdgeInsets.only(left: 6, top: 14),
+                        child: Text(
+                          Helpers.truncateText(product.title, 55),
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                            color: AppTheme.textPrimary,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       // Segunda linha: Rating + Botão de favorito
                       Row(
@@ -109,41 +107,36 @@ class ProductCard extends StatelessWidget {
                           // Rating
                           Row(
                             children: [
-                              const Icon(
-                                Icons.star_rounded,
-                                color: Colors.amber,
-                                size: 16,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                Helpers.formatRating(product.rating.rate),
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                                const Icon(
+                                  Icons.star_rounded,
+                                  color: Colors.amber,
+                                  size: 24,
                                 ),
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                '(${product.rating.count})',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.grey[600],
+                                const SizedBox(width: 4),
+                                Text(
+                                  Helpers.formatRating(product.rating.rate),
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.textSecondary,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '(${product.rating.count} reviews)',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
                           // Botão de favorito
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.white,
                               shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.1),
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
                             ),
                             child: IconButton(
                               onPressed: onFavoriteToggle,
@@ -161,15 +154,14 @@ class ProductCard extends StatelessWidget {
                       // Terceira linha: Preço e categoria
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           // Preço
                           Text(
                             Helpers.formatPrice(product.price),
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: AppTheme.primaryColor,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                              color: Color(0xFFF37A20),
                             ),
                           ),
                           // Categoria

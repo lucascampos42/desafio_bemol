@@ -105,13 +105,11 @@ class _HomeScreenState extends State<HomeScreen> {
               onRefresh: _productProvider.refresh,
               child: Column(
                 children: [
-                  // Barra de busca
                   SearchBarWidget(
                     controller: _searchController,
                     isSearching: state.isSearching,
                     onClear: _clearFilters,
                   ),
-                  // Lista de produtos
                   Expanded(
                     child: ProductListWidget(
                       state: state,
