@@ -43,6 +43,9 @@ dependencies:
   
   # Google Fonts para tipografia
   google_fonts: ^6.1.0
+  
+  # Cache de imagens para melhor performance
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:

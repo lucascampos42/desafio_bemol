@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import '../../data/models/product.dart';
 import '../../core/utils/helpers.dart';
 import '../../core/utils/constants.dart';
@@ -43,40 +44,35 @@ class ProductCard extends StatelessWidget {
                 width: 120,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(AppConstants.smallBorderRadius),
-                  child: Image.network(
-                    product.image,
+                  child: CachedNetworkImage(
+                    imageUrl: product.image,
                     fit: BoxFit.contain,
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
-                      );
-                    },
-                    errorBuilder: (context, error, stackTrace) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.image_not_supported,
-                              size: 30,
-                              color: Colors.grey[400],
+                    placeholder: (context, url) => const Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.image_not_supported,
+                            size: 30,
+                            color: Colors.grey[400],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Image\nunavailable',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: Colors.grey[600],
                             ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Image\nunavailable',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 9,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
