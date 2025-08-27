@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../data/models/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../../core/utils/constants.dart';
-import '../../../core/utils/helpers.dart';
-import '../../widgets/product_card.dart';
 import '../../widgets/state_widgets.dart';
+import '../../widgets/product_card.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
 
@@ -63,9 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _onCategorySelected(String? category) {
-    _productProvider.filterByCategory(category);
-  }
+
 
   void _clearFilters() {
     _searchController.clear();
@@ -75,8 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Produtos'),
+        title: const Text('Products', style: TextStyle(fontSize: 20)),
+        centerTitle: false,
         actions: [
           ValueListenableBuilder(
             valueListenable: _productProvider,
@@ -85,12 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   IconButton(
                     onPressed: _navigateToFavorites,
-                    icon: const Icon(Icons.favorite),
+                    icon: const Icon(Icons.favorite_border_outlined),
                   ),
                   if (state.hasFavorites)
                     Positioned(
-                      right: 8,
-                      top: 8,
+                      right: 4,
+                      top: 4,
                       child: Container(
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
@@ -105,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           '${state.favorites.length}',
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 20,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -148,11 +147,11 @@ class _HomeScreenState extends State<HomeScreen> {
           // Campo de busca
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Colors.grey[100],
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
+                  color: Colors.black.withOpacity(0.2),
                   spreadRadius: 1,
                   blurRadius: 4,
                   offset: const Offset(0, 2),
@@ -162,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Buscar produtos...',
+                hintText: 'Search products...',
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
                 suffixIcon: state.isSearching
                     ? IconButton(
@@ -178,46 +177,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          const SizedBox(height: AppConstants.defaultPadding),
-          // Filtro de categorias
-          if (state.categories.isNotEmpty)
-            SizedBox(
-              height: 40,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: state.categories.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: FilterChip(
-                        label: const Text('Todos'),
-                        selected: state.selectedCategory == null,
-                        onSelected: (_) => _onCategorySelected(null),
-                      ),
-                    );
-                  }
-                  
-                  final category = state.categories[index - 1];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: FilterChip(
-                      label: Text(Helpers.capitalize(category)),
-                      selected: state.selectedCategory == category,
-                      onSelected: (_) => _onCategorySelected(category),
-                    ),
-                  );
-                },
-              ),
-            ),
+
         ],
       ),
     );
   }
 
+
+
+
   Widget _buildProductList(state) {
     if (state.isLoading && !state.hasProducts) {
-      return const LoadingWidget(message: 'Carregando produtos...');
+      return const LoadingWidget(message: 'Loading products...');
     }
 
     if (state.hasError && !state.hasProducts) {
@@ -229,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     if (!state.hasProducts) {
       return const EmptyWidget(
-        message: 'Nenhum produto encontrado',
-        subtitle: 'Tente novamente mais tarde',
+        message: 'No products found',
+        subtitle: 'Try again later',
         icon: Icons.shopping_bag_outlined,
       );
     }
@@ -243,28 +214,25 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
       return const EmptyWidget(
-        message: 'Nenhum produto nesta categoria',
+        message: 'No products in this category',
         icon: Icons.category_outlined,
       );
     }
 
-    return GridView.builder(
+    return ListView.builder(
       controller: _scrollController,
-      padding: const EdgeInsets.all(AppConstants.smallPadding),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 0.7,
-        crossAxisSpacing: AppConstants.smallPadding,
-        mainAxisSpacing: AppConstants.smallPadding,
-      ),
+      padding: EdgeInsets.zero,
       itemCount: state.filteredProducts.length,
       itemBuilder: (context, index) {
         final product = state.filteredProducts[index];
-        return ProductCard(
-          product: product,
-          isFavorite: _productProvider.isFavorite(product.id),
-          onTap: () => _navigateToProductDetail(product),
-          onFavoriteToggle: () => _productProvider.toggleFavorite(product),
+        return Padding(
+          padding: const EdgeInsets.only(bottom: AppConstants.defaultPadding),
+          child: ProductCard(
+            product: product,
+            isFavorite: _productProvider.isFavorite(product.id),
+            onTap: () => _navigateToProductDetail(product),
+            onFavoriteToggle: () => _productProvider.toggleFavorite(product),
+          ),
         );
       },
     );
