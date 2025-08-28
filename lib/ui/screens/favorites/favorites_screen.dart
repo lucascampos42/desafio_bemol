@@ -4,6 +4,7 @@ import '../../../data/models/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../widgets/product_card.dart';
 import '../../widgets/state_widgets.dart';
+import '../error/error_screen.dart';
 import '../product_detail/product_detail_screen.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -56,14 +57,13 @@ class FavoritesScreen extends StatelessWidget {
           }
 
           if (state.hasError) {
-            return CustomErrorWidget(
-              message: state.error!,
-              onRetry: () {
-                productProvider.clearError();
-                productProvider.loadFavoritesOnly();
-              },
-              useErrorImage: false,
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const ErrorScreen()),
+              );
+            });
+            return const SizedBox.shrink();
           }
 
           if (!state.hasFavorites) {
