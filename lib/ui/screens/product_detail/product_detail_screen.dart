@@ -8,6 +8,7 @@ import '../../../providers/product_provider.dart';
 import '../../../core/utils/constants.dart';
 import '../../../core/utils/animations.dart';
 import '../../../core/utils/performance_metrics.dart';
+import '../../../core/utils/responsive_helper.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -69,31 +70,86 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: ResponsiveHelper.responsive(
+        context: context,
+        mobile: _buildMobileLayout(),
+        desktop: _buildDesktopLayout(),
+      ),
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return SingleChildScrollView(
+      child: AppAnimations.fadeSlideIn(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppAnimations.fadeIn(
+              child: ProductImageWidget(imageUrl: widget.product.image),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(AppConstants.defaultPadding),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppAnimations.fadeSlideIn(
+                    child: ProductTitleAndCategoryWidget(title: widget.product.title),
+                  ),
+                  const SizedBox(height: AppConstants.defaultPadding),
+                  AppAnimations.fadeSlideIn(
+                    child: ProductRatingAndPriceWidget(rating: widget.product.rating, price: widget.product.price),
+                  ),
+                  const SizedBox(height: AppConstants.largePadding),
+                  AppAnimations.fadeSlideIn(
+                    child: ProductDescriptionWidget(category: widget.product.category, description: widget.product.description),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout() {
+    return ResponsiveContainer(
+      child: SingleChildScrollView(
         child: AppAnimations.fadeSlideIn(
-          child: Column(
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              AppAnimations.fadeIn(
-                child: ProductImageWidget(imageUrl: widget.product.image),
+              // Imagem do produto (lado esquerdo)
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: AppAnimations.fadeIn(
+                    child: ProductImageWidget(imageUrl: widget.product.image),
+                  ),
+                ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(AppConstants.defaultPadding),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    AppAnimations.fadeSlideIn(
-                      child: ProductTitleAndCategoryWidget(title: widget.product.title),
-                    ),
-                    const SizedBox(height: AppConstants.defaultPadding),
-                    AppAnimations.fadeSlideIn(
-                      child: ProductRatingAndPriceWidget(rating: widget.product.rating, price: widget.product.price),
-                    ),
-                    const SizedBox(height: AppConstants.largePadding),
-                    AppAnimations.fadeSlideIn(
-                      child: ProductDescriptionWidget(category: widget.product.category, description: widget.product.description),
-                    ),
-                  ],
+              // Informações do produto (lado direito)
+              Expanded(
+                flex: 1,
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppAnimations.fadeSlideIn(
+                        child: ProductTitleAndCategoryWidget(title: widget.product.title),
+                      ),
+                      const SizedBox(height: AppConstants.defaultPadding),
+                      AppAnimations.fadeSlideIn(
+                        child: ProductRatingAndPriceWidget(rating: widget.product.rating, price: widget.product.price),
+                      ),
+                      const SizedBox(height: AppConstants.largePadding),
+                      AppAnimations.fadeSlideIn(
+                        child: ProductDescriptionWidget(category: widget.product.category, description: widget.product.description),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

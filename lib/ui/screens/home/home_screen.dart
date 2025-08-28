@@ -3,6 +3,7 @@ import '../../../data/models/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/product_list_widget.dart';
+import '../../widgets/responsive_product_list_widget.dart';
 import '../../widgets/favorites_badge_widget.dart';
 import '../../widgets/category_error_widget.dart';
 import '../product_detail/product_detail_screen.dart';
@@ -10,6 +11,7 @@ import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
 import '../../../core/utils/animations.dart';
 import '../../../core/utils/performance_metrics.dart';
+import '../../../core/utils/responsive_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -194,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             isCompact: true,
                           ),
                         Expanded(
-                          child: ProductListWidget(
+                          child: ResponsiveProductListWidget(
                             state: state,
                             scrollController: _scrollController,
                             onProductTap: _navigateToProductDetail,

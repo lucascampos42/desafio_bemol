@@ -7,6 +7,7 @@ import '../../widgets/state_widgets.dart';
 import '../error/error_screen.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../../../core/utils/performance_metrics.dart';
+import '../../../core/utils/responsive_helper.dart';
 
 class FavoritesScreen extends StatefulWidget {
   final ProductProvider productProvider;
@@ -115,7 +116,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
           return RefreshIndicator(
             onRefresh: widget.productProvider.loadFavoritesOnly,
-            child: _buildFavoritesList(context, state),
+            child: ResponsiveHelper.responsive(
+              context: context,
+              mobile: _buildFavoritesList(context, state),
+              desktop: _buildDesktopLayout(context, state),
+            ),
           );
         },
       ),
@@ -125,6 +130,31 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget _buildFavoritesList(BuildContext context, dynamic state) {
     return ListView.builder(
       padding: EdgeInsets.zero,
+      itemCount: state.favorites.length,
+      itemBuilder: (context, index) {
+        final product = state.favorites[index];
+        return AnimatedListItem(
+          index: index,
+          child: ProductCard(
+            product: product,
+            isFavorite: true,
+            onTap: () => _navigateToProductDetail(context, product),
+            onFavoriteToggle: () => widget.productProvider.toggleFavorite(product, context),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDesktopLayout(BuildContext context, dynamic state) {
+    return GridView.builder(
+      padding: const EdgeInsets.all(24),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.8,
+      ),
       itemCount: state.favorites.length,
       itemBuilder: (context, index) {
         final product = state.favorites[index];
