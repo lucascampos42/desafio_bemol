@@ -1,5 +1,5 @@
+import 'package:desafio_bemol/core/utils/animations.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../data/models/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../widgets/product_card.dart';
@@ -33,11 +33,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     });
   }
 
-  void _navigateToProductDetail(BuildContext context, Product product) {
-    Navigator.push(
+  Future<void> _navigateToProductDetail(BuildContext context, Product product) async {
+    await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ProductDetailScreen(
+      AppAnimations.createRoute(
+        ProductDetailScreen(
           product: product,
           productProvider: widget.productProvider,
         ),
@@ -52,9 +52,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0,
-        title: Text(
+        title: const Text(
           'Favorites',
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
             height: 1.0,
@@ -116,11 +116,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       itemCount: state.favorites.length,
       itemBuilder: (context, index) {
         final product = state.favorites[index];
-        return ProductCard(
-          product: product,
-          isFavorite: true,
-          onTap: () => _navigateToProductDetail(context, product),
-          onFavoriteToggle: () => widget.productProvider.toggleFavorite(product, context),
+        return AppAnimations.animatedListItem(
+          index: index,
+          child: ProductCard(
+            product: product,
+            isFavorite: true,
+            onTap: () => _navigateToProductDetail(context, product),
+            onFavoriteToggle: () => widget.productProvider.toggleFavorite(product, context),
+          ),
         );
       },
     );

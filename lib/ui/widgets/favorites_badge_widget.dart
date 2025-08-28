@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../core/utils/animations.dart';
 
 class FavoritesBadgeWidget extends StatelessWidget {
   final VoidCallback onTap;
@@ -14,9 +15,10 @@ class FavoritesBadgeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onTap,
-      icon: Icon(
-        hasFavorites ? Icons.favorite : Icons.favorite_border_outlined,
-        color: hasFavorites ? Colors.red : null,
+      icon: AppAnimations.favoriteHeart(
+        isFavorite: hasFavorites,
+        onTap: onTap,
+        size: 24,
       ),
     );
   }

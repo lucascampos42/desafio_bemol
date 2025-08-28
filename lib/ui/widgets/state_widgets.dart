@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/utils/constants.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/animations.dart';
 
 class LoadingWidget extends StatelessWidget {
   final String? message;
@@ -10,21 +11,11 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator(),
-          if (message != null) ...[
-            const SizedBox(height: AppConstants.defaultPadding),
-            Text(
-              message!,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: AppTheme.textSecondary,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ],
+      child: AppAnimations.fadeIn(
+        child: AnimatedLoadingWidget(
+          message: message,
+          size: 40,
+        ),
       ),
     );
   }
@@ -60,26 +51,27 @@ class CustomErrorWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (useErrorImage)
-              Image.asset(
-                'assets/images/erro.png',
-                width: 120,
-                height: 120,
-                fit: BoxFit.contain,
-                errorBuilder: (context, error, stackTrace) {
-                  return Icon(
-                    _isConnectionError ? Icons.wifi_off : (icon ?? Icons.error_outline),
-                    size: 64,
-                    color: AppTheme.errorColor,
-                  );
-                },
-              )
-            else
-              Icon(
-                _isConnectionError ? Icons.wifi_off : (icon ?? Icons.error_outline),
-                size: 64,
-                color: AppTheme.errorColor,
-              ),
+            AppAnimations.scaleIn(
+              child: useErrorImage
+                  ? Image.asset(
+                      'assets/images/erro.png',
+                      width: 120,
+                      height: 120,
+                      fit: BoxFit.contain,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Icon(
+                          _isConnectionError ? Icons.wifi_off : (icon ?? Icons.error_outline),
+                          size: 64,
+                          color: AppTheme.errorColor,
+                        );
+                      },
+                    )
+                  : Icon(
+                      _isConnectionError ? Icons.wifi_off : (icon ?? Icons.error_outline),
+                      size: 64,
+                      color: AppTheme.errorColor,
+                    ),
+            ),
             // Só mostra textos se NÃO for erro de conexão
             if (!_isConnectionError) ...[
               const SizedBox(height: AppConstants.defaultPadding),
@@ -94,10 +86,12 @@ class CustomErrorWidget extends StatelessWidget {
             ],
             if (onRetry != null) ...[
               const SizedBox(height: AppConstants.largePadding),
-              ElevatedButton.icon(
-                onPressed: onRetry,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Try Again'),
+              AppAnimations.fadeSlideIn(
+                child: ElevatedButton.icon(
+                  onPressed: onRetry,
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Try Again'),
+                ),
               ),
             ],
           ],
@@ -147,22 +141,25 @@ class EmptyWidget extends StatelessWidget {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppConstants.largePadding),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon ?? Icons.inbox_outlined,
-              size: 64,
-              color: AppTheme.textHint,
-            ),
-            const SizedBox(height: AppConstants.defaultPadding),
-            Text(
-              message,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                color: AppTheme.textPrimary,
+        child: AppAnimations.fadeSlideIn(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppAnimations.scaleIn(
+                child: Icon(
+                  icon ?? Icons.inbox_outlined,
+                  size: 64,
+                  color: AppTheme.textHint,
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
+              const SizedBox(height: AppConstants.defaultPadding),
+              Text(
+                message,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: AppTheme.textPrimary,
+                ),
+                textAlign: TextAlign.center,
+              ),
             if (subtitle != null) ...[
               const SizedBox(height: AppConstants.smallPadding),
               Text(
@@ -173,11 +170,12 @@ class EmptyWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ],
-            if (action != null) ...[
-              const SizedBox(height: AppConstants.largePadding),
-              action!,
+              if (action != null) ...[
+                const SizedBox(height: AppConstants.largePadding),
+                action!,
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

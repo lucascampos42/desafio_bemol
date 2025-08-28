@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../data/models/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../widgets/search_bar_widget.dart';
@@ -10,6 +9,7 @@ import '../../widgets/enhanced_error_widget.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
+import '../../../core/utils/animations.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -80,8 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void _navigateToProductDetail(Product product) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => ProductDetailScreen(
+      AppAnimations.createRoute(
+        page: ProductDetailScreen(
           product: product,
           productProvider: _productProvider,
         ),
@@ -93,8 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
     _productProvider.clearError();
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => FavoritesScreen(
+      AppAnimations.createRoute(
+        page: FavoritesScreen(
           productProvider: _productProvider,
         ),
       ),
@@ -119,9 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Products',
-          style: GoogleFonts.poppins(
+          style: TextStyle(
             fontWeight: FontWeight.w600,
             fontSize: 20,
             height: 1.0,
@@ -143,14 +143,12 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SafeArea(
         child: _isInitializing
-            ? const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text('Initializing app...'),
-                  ],
+            ? Center(
+                child: AppAnimations.fadeIn(
+                  child: const AnimatedLoadingWidget(
+                    message: 'Initializing app...',
+                    size: 50,
+                  ),
                 ),
               )
             : ValueListenableBuilder(
@@ -158,11 +156,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, state, child) {
                   if (state.hasError && !state.hasProducts) {
                     return Center(
-                      child: Image.asset(
-                        'assets/images/empty.png',
-                        width: 200,
-                        height: 200,
-                        fit: BoxFit.contain,
+                      child: AppAnimations.scaleIn(
+                        child: Image.asset(
+                          'assets/images/empty.png',
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.contain,
+                        ),
                       ),
                     );
                   }
