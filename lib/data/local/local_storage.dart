@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/product.dart';
 import '../../core/utils/constants.dart';
+import '../../core/utils/logger.dart';
 
 class LocalStorage {
   static LocalStorage? _instance;
@@ -91,7 +92,7 @@ class LocalStorage {
       final List<Product> favorites = await loadFavorites();
       return favorites.any((product) => product.id == productId);
     } catch (e) {
-      print('Error checking favorite: $e');
+      AppLogger.error('Erro ao verificar se produto é favorito', e, null, LogTags.storage);
       return false;
     }
   }
@@ -101,7 +102,7 @@ class LocalStorage {
     try {
       return await _prefs!.remove(AppConstants.favoritesKey);
     } catch (e) {
-      print('Error clearing favorites: $e');
+      AppLogger.error('Erro ao limpar favoritos', e, null, LogTags.storage);
       return false;
     }
   }
@@ -112,7 +113,7 @@ class LocalStorage {
       final List<Product> favorites = await loadFavorites();
       return favorites.map((product) => product.id).toSet();
     } catch (e) {
-      print('Error getting favorite IDs: $e');
+      AppLogger.error('Erro ao obter IDs dos favoritos', e, null, LogTags.storage);
       return <int>{};
     }
   }

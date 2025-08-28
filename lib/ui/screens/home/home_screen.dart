@@ -5,9 +5,12 @@ import '../../../providers/product_provider.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/product_list_widget.dart';
 import '../../widgets/favorites_badge_widget.dart';
+import '../../widgets/category_error_widget.dart';
+import '../../widgets/enhanced_error_widget.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
+import '../../../core/utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -27,7 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _productProvider = ProductProvider();
     _searchController.addListener(_onSearchChanged);
-    _initializeApp();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeApp();
+    });
   }
 
   Future<void> _initializeApp() async {
@@ -35,6 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await _productProvider.ensureInitialized();
       
       await _productProvider.initializeWithApi();
+      await _productProvider.loadCategories(context);
     } catch (e) {
       debugPrint('Error during app initialization: $e');
       if (mounted) {
@@ -154,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }
                   return RefreshIndicator(
-                    onRefresh: _productProvider.refresh,
+                    onRefresh: () => _productProvider.refresh(context),
                     child: Column(
                       children: [
                         SearchBarWidget(
@@ -162,14 +168,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           isSearching: state.isSearching,
                           onClear: _clearFilters,
                         ),
+                        // Exibe erro de categorias se houver
+                        if (state.hasCategoriesError)
+                          CategoryErrorWidget(
+                            message: state.categoriesError!,
+                            onRetry: () => _productProvider.loadCategories(context),
+                            isCompact: true,
+                          ),
                         Expanded(
                           child: ProductListWidget(
                             state: state,
                             scrollController: _scrollController,
                             onProductTap: _navigateToProductDetail,
-                            onFavoriteToggle: _productProvider.toggleFavorite,
+                            onFavoriteToggle: (product, context) => _productProvider.toggleFavorite(product, context),
                             isFavorite: _productProvider.isFavorite,
-                            onRefresh: _productProvider.refresh,
+                            onRefresh: () => _productProvider.refresh(context),
                             onClearSearch: _clearFilters,
                           ),
                         ),
@@ -182,5 +195,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  ErrorType _getErrorType(String error) {
+    if (error.contains('conexão') || error.contains('internet')) {
+      return ErrorType.network;
+    } else if (error.contains('servidor') || error.contains('indisponível')) {
+      return ErrorType.server;
+    } else if (error.contains('tempo') || error.contains('limite')) {
+      return ErrorType.timeout;
+    } else {
+      return ErrorType.generic;
+    }
+  }
 
 }

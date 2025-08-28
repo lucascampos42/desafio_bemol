@@ -1,9 +1,13 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import '../data/models/product.dart';
 import '../data/services/api_service.dart';
 import '../data/local/local_storage.dart';
 import '../core/utils/helpers.dart';
 import '../core/utils/constants.dart';
+import '../core/utils/logger.dart';
+import '../core/utils/toast_helper.dart';
+import '../ui/widgets/enhanced_error_widget.dart';
 import 'product_state.dart';
 
 class ProductProvider extends ValueNotifier<ProductState> {
@@ -35,15 +39,19 @@ class ProductProvider extends ValueNotifier<ProductState> {
       _localStorage = await LocalStorage.getInstance();
       await loadFavorites();
       _isInitialized = true;
+      AppLogger.success('Provider inicializado com sucesso', LogTags.provider);
     } catch (e) {
-      print('Error during initialization: $e');
+      AppLogger.error('Erro durante inicialização', e, null, LogTags.provider);
       try {
         _localStorage ??= await LocalStorage.getInstance();
         await loadFavorites();
         _isInitialized = true;
+        AppLogger.success('Provider inicializado na segunda tentativa', LogTags.provider);
       } catch (localError) {
-        print('Error initializing local storage: $localError');
+        AppLogger.error('Erro crítico ao inicializar local storage', localError, null, LogTags.provider);
         _isInitialized = false;
+        // Notifica erro crítico para o usuário
+        value = value.copyWith(error: 'Erro ao inicializar armazenamento local. Tente reiniciar o app.');
       }
     }
   }
@@ -56,7 +64,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
 
-  Future<void> loadProducts() async {
+  Future<void> loadProducts([BuildContext? context]) async {
     if (value.isLoading) return;
     
     value = value.copyWith(isLoading: true, clearError: true);
@@ -69,21 +77,63 @@ class ProductProvider extends ValueNotifier<ProductState> {
         isLoading: false,
       );
     } catch (e) {
+      String errorMessage;
+      ErrorType errorType;
+      
+      if (e.toString().contains('SocketException') || 
+          e.toString().contains('NetworkException')) {
+        errorMessage = 'Sem conexão com a internet';
+        errorType = ErrorType.network;
+      } else if (e.toString().contains('TimeoutException')) {
+        errorMessage = 'Tempo limite excedido';
+        errorType = ErrorType.timeout;
+      } else if (e.toString().contains('500') || e.toString().contains('502')) {
+        errorMessage = 'Servidor temporariamente indisponível';
+        errorType = ErrorType.server;
+      } else {
+        errorMessage = 'Erro ao carregar produtos';
+        errorType = ErrorType.generic;
+      }
+      
       value = value.copyWith(
         isLoading: false,
-        error: e.toString(),
+        error: errorMessage,
       );
+      
+      if (context != null && context.mounted) {
+        ToastHelper.showError(context, errorMessage);
+      }
     }
   }
 
   /// Carrega categorias
-  Future<void> loadCategories() async {
+  Future<void> loadCategories([BuildContext? context]) async {
     try {
       final categories = await _apiService.getCategories();
-      value = value.copyWith(categories: categories);
+      value = value.copyWith(
+        categories: categories,
+        categoriesError: null,
+      );
+      AppLogger.success('${categories.length} categorias carregadas', LogTags.categories);
     } catch (e) {
-      // Erro silencioso para categorias
-      print('Error loading categories: $e');
+      AppLogger.warning('Falha ao carregar categorias - continuando sem filtros', LogTags.categories);
+      
+      String errorMessage = 'Filtros por categoria indisponíveis';
+      
+      if (e.toString().contains('SocketException') || 
+          e.toString().contains('NetworkException')) {
+        errorMessage = 'Sem conexão para carregar categorias';
+      }
+      
+      // Não é um erro crítico, mas informa o usuário sutilmente
+      value = value.copyWith(
+        categories: [], // Lista vazia para evitar null
+        categoriesError: errorMessage
+      );
+      
+      if (context != null && context.mounted) {
+        ToastHelper.showWarning(context, errorMessage);
+      }
     }
   }
 
@@ -124,26 +174,32 @@ class ProductProvider extends ValueNotifier<ProductState> {
         favoriteIds: favoriteIds,
         isLoadingFavorites: false,
       );
-      print('✅ Loaded ${favorites.length} favorites from local storage');
+      AppLogger.success('${favorites.length} favoritos carregados do armazenamento local', LogTags.favorites);
     } catch (e) {
-      print('❌ Error loading favorites from local storage: $e');
+      AppLogger.error('Erro ao carregar favoritos do armazenamento local', e, null, LogTags.favorites);
       value = value.copyWith(
         isLoadingFavorites: false,
-        error: 'Error loading favorites from local storage: $e',
+        error: 'Erro ao carregar favoritos. Verifique o armazenamento do dispositivo.',
       );
     }
   }
 
   void searchProducts(String query) {
+    // Atualiza imediatamente o searchQuery para mostrar feedback visual
+    value = value.copyWith(searchQuery: query);
+    
+    // Aplica debounce apenas na filtragem para otimizar performance
     _searchDebouncer.run(() {
       value = value.copyWith(
-        searchQuery: query,
         filteredProducts: _filterProducts(value.products),
       );
     });
   }
 
   void clearFilters() {
+    // Cancela qualquer debounce pendente para evitar atualizações desnecessárias
+    _searchDebouncer.cancel();
+    
     value = value.copyWith(
       searchQuery: '',
       selectedCategory: null,
@@ -153,7 +209,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Adiciona/remove produto dos favoritos
-  Future<void> toggleFavorite(Product product) async {
+  Future<void> toggleFavorite(Product product, [BuildContext? context]) async {
     try {
       print('🔄 toggleFavorite called for product: ${product.title} (ID: ${product.id})');
       _localStorage ??= await LocalStorage.getInstance();
@@ -174,6 +230,10 @@ class ProductProvider extends ValueNotifier<ProductState> {
           favoriteIds: newFavoriteIds,
         );
         print('📊 New favorites count: ${newFavorites.length}');
+        
+        if (context != null && context.mounted) {
+          ToastHelper.showInfo(context, 'Removido dos favoritos');
+        }
       } else {
         print('➕ Adding to favorites...');
         final success = await _localStorage!.addToFavorites(product);
@@ -186,15 +246,26 @@ class ProductProvider extends ValueNotifier<ProductState> {
           favorites: newFavorites,
           favoriteIds: newFavoriteIds,
         );
-        print('📊 New favorites count: ${newFavorites.length}');
+        AppLogger.info('Favoritos atualizados: ${newFavorites.length} itens', LogTags.favorites);
+        
+        if (context != null && context.mounted) {
+          ToastHelper.showSuccess(context, 'Adicionado aos favoritos');
+        }
       }
       
       final savedFavorites = await _localStorage!.loadFavorites();
-      print('💾 Saved favorites count in storage: ${savedFavorites.length}');
+      AppLogger.debug('Favoritos salvos no armazenamento: ${savedFavorites.length}', LogTags.favorites);
       
     } catch (e) {
-      print('❌ Error in toggleFavorite: $e');
-      value = value.copyWith(error: 'Error updating favorites: $e');
+      AppLogger.error('Erro ao alternar favorito', e, null, LogTags.favorites);
+      value = value.copyWith(error: 'Erro ao atualizar favoritos. Tente novamente.');
+      
+      if (context != null && context.mounted) {
+        ToastHelper.showError(
+          context,
+          'Erro ao salvar favorito. Tente novamente.',
+        );
+      }
     }
   }
 
@@ -210,11 +281,11 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
 
-  Future<void> refresh() async {
+  Future<void> refresh([BuildContext? context]) async {
     await Future.wait([
-      loadProducts(),
+      loadProducts(context),
       loadFavorites(),
-      loadCategories(),
+      loadCategories(context),
     ]);
   }
 
@@ -222,10 +293,20 @@ class ProductProvider extends ValueNotifier<ProductState> {
   List<Product> _filterProducts(List<Product> products) {
     var filtered = products;
     
+    // Aplica filtro de busca apenas no título (não na categoria)
     if (value.searchQuery.isNotEmpty) {
-      final query = value.searchQuery.toLowerCase();
+      final query = value.searchQuery.toLowerCase().trim();
+      if (query.isNotEmpty) {
+        filtered = filtered.where((product) => 
+          product.title.toLowerCase().contains(query)
+        ).toList();
+      }
+    }
+    
+    // Aplica filtro de categoria se selecionada
+    if (value.selectedCategory != null && value.selectedCategory!.isNotEmpty) {
       filtered = filtered.where((product) => 
-        product.title.toLowerCase().contains(query)
+        product.category.toLowerCase() == value.selectedCategory!.toLowerCase()
       ).toList();
     }
     

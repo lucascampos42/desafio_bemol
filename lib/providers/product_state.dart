@@ -8,6 +8,7 @@ class ProductState {
   final bool isLoading;
   final bool isLoadingFavorites;
   final String? error;
+  final String? categoriesError;
   final String searchQuery;
   final String? selectedCategory;
   final List<String> categories;
@@ -20,6 +21,7 @@ class ProductState {
     required this.isLoading,
     required this.isLoadingFavorites,
     this.error,
+    this.categoriesError,
     required this.searchQuery,
     this.selectedCategory,
     required this.categories,
@@ -35,6 +37,7 @@ class ProductState {
       isLoading: false,
       isLoadingFavorites: false,
       error: null,
+      categoriesError: null,
       searchQuery: '',
       selectedCategory: null,
       categories: [],
@@ -51,6 +54,8 @@ class ProductState {
     bool? isLoadingFavorites,
     String? error,
     bool clearError = false,
+    String? categoriesError,
+    bool clearCategoriesError = false,
     String? searchQuery,
     String? selectedCategory,
     bool clearCategory = false,
@@ -64,6 +69,7 @@ class ProductState {
       isLoading: isLoading ?? this.isLoading,
       isLoadingFavorites: isLoadingFavorites ?? this.isLoadingFavorites,
       error: clearError ? null : (error ?? this.error),
+      categoriesError: clearCategoriesError ? null : (categoriesError ?? this.categoriesError),
       searchQuery: searchQuery ?? this.searchQuery,
       selectedCategory: clearCategory ? null : (selectedCategory ?? this.selectedCategory),
       categories: categories ?? this.categories,
@@ -78,6 +84,9 @@ class ProductState {
 
   /// Verifica se tem erro
   bool get hasError => error != null;
+
+  /// Verifica se tem erro de categorias
+  bool get hasCategoriesError => categoriesError != null;
 
   /// Verifica se está buscando
   bool get isSearching => searchQuery.isNotEmpty;
@@ -96,6 +105,7 @@ class ProductState {
         other.isLoading == isLoading &&
         other.isLoadingFavorites == isLoadingFavorites &&
         other.error == error &&
+        other.categoriesError == categoriesError &&
         other.searchQuery == searchQuery &&
         other.selectedCategory == selectedCategory &&
         other.categories == categories;
@@ -111,6 +121,7 @@ class ProductState {
       isLoading,
       isLoadingFavorites,
       error,
+      categoriesError,
       searchQuery,
       selectedCategory,
       categories,

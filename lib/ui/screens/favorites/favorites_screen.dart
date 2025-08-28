@@ -20,10 +20,17 @@ class FavoritesScreen extends StatefulWidget {
 }
 
 class _FavoritesScreenState extends State<FavoritesScreen> {
+  bool _hasNavigatedToError = false;
+
   @override
   void initState() {
     super.initState();
-    widget.productProvider.loadFavoritesOnly();
+    // Carrega favoritos após o build inicial para evitar setState durante build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        widget.productProvider.loadFavoritesOnly();
+      }
+    });
   }
 
   void _navigateToProductDetail(BuildContext context, Product product) {
@@ -63,12 +70,17 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           }
 
           if (state.hasError) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const ErrorScreen()),
-              );
-            });
+            if (!_hasNavigatedToError) {
+              _hasNavigatedToError = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ErrorScreen()),
+                  );
+                }
+              });
+            }
             return const SizedBox.shrink();
           }
 
@@ -108,7 +120,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           product: product,
           isFavorite: true,
           onTap: () => _navigateToProductDetail(context, product),
-          onFavoriteToggle: () => widget.productProvider.toggleFavorite(product),
+          onFavoriteToggle: () => widget.productProvider.toggleFavorite(product, context),
         );
       },
     );

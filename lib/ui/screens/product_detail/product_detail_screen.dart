@@ -39,7 +39,7 @@ class ProductDetailScreen extends StatelessWidget {
             builder: (context, state, child) {
               final isFavorite = productProvider.isFavorite(product.id);
               return IconButton(
-                onPressed: () => productProvider.toggleFavorite(product),
+                onPressed: () => productProvider.toggleFavorite(product, context),
                 icon: Icon(
                   isFavorite ? Icons.favorite : Icons.favorite_border,
                   color: isFavorite ? Colors.red : null,

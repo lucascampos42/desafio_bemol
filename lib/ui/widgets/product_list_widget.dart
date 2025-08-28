@@ -8,7 +8,7 @@ class ProductListWidget extends StatelessWidget {
   final ProductState state;
   final ScrollController scrollController;
   final Function(Product) onProductTap;
-  final Function(Product) onFavoriteToggle;
+  final Function(Product, BuildContext) onFavoriteToggle;
   final bool Function(int) isFavorite;
   final VoidCallback onRefresh;
   final VoidCallback onClearSearch;
@@ -68,7 +68,7 @@ class ProductListWidget extends StatelessWidget {
           product: product,
           isFavorite: isFavorite(product.id),
           onTap: () => onProductTap(product),
-          onFavoriteToggle: () => onFavoriteToggle(product),
+          onFavoriteToggle: () => onFavoriteToggle(product, context),
         );
       },
     );

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../models/product.dart';
 import '../../core/utils/constants.dart';
+import '../../core/utils/logger.dart';
 
 class ApiService {
   static ApiService? _instance;
@@ -40,7 +41,7 @@ class ApiService {
       _dio.interceptors.add(LogInterceptor(
         requestBody: true,
         responseBody: true,
-        logPrint: (obj) => debugPrint(obj.toString()),
+        logPrint: (obj) => AppLogger.debug(obj.toString(), LogTags.api),
         error: true,
         requestHeader: true,
         responseHeader: true,
@@ -48,8 +49,16 @@ class ApiService {
     }
 
     _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        AppLogger.info('Requisição: ${options.method} ${options.path}', LogTags.api);
+        handler.next(options);
+      },
+      onResponse: (response, handler) {
+        AppLogger.success('Resposta: ${response.statusCode} ${response.requestOptions.path}', LogTags.api);
+        handler.next(response);
+      },
       onError: (error, handler) {
-        debugPrint('API Error: ${error.message}');
+        AppLogger.error('Erro na API: ${error.message}', error, null, LogTags.api);
         handler.next(error);
       },
     ));
@@ -61,9 +70,11 @@ class ApiService {
       
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((json) => Product.fromJson(json)).toList();
+        final products = data.map((json) => Product.fromJson(json)).toList();
+        AppLogger.success('${products.length} produtos carregados com sucesso', LogTags.api);
+        return products;
       } else {
-        throw ApiException('Error loading products: ${response.statusCode}');
+        throw ApiException('Erro ao carregar produtos: ${response.statusCode}');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -77,9 +88,11 @@ class ApiService {
       final response = await _dio.get('${AppConstants.productsEndpoint}/$id');
       
       if (response.statusCode == 200) {
-        return Product.fromJson(response.data);
+        final product = Product.fromJson(response.data);
+        AppLogger.success('Produto ${product.title} carregado com sucesso', LogTags.api);
+        return product;
       } else {
-        throw ApiException('Product not found');
+        throw ApiException('Produto não encontrado');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -94,9 +107,11 @@ class ApiService {
       
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.map((json) => Product.fromJson(json)).toList();
+        final products = data.map((json) => Product.fromJson(json)).toList();
+        AppLogger.success('${products.length} produtos da categoria "$category" carregados', LogTags.api);
+        return products;
       } else {
-        throw ApiException('Error loading category products');
+        throw ApiException('Erro ao carregar produtos da categoria');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -111,9 +126,11 @@ class ApiService {
       
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
-        return data.cast<String>();
+        final categories = data.cast<String>();
+        AppLogger.success('${categories.length} categorias carregadas: ${categories.join(", ")}', LogTags.api);
+        return categories;
       } else {
-        throw ApiException('Error loading categories');
+        throw ApiException('Erro ao carregar categorias');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -129,15 +146,15 @@ class ApiService {
         if (e.response?.statusCode == 404) {
           return ApiException(AppConstants.notFoundError);
         }
-        return ApiException('Server error: ${e.response?.statusCode}');
+        return ApiException('Erro do servidor: ${e.response?.statusCode}');
       case DioExceptionType.cancel:
-        return ApiException('Request cancelled');
+        return ApiException('Requisição cancelada');
       case DioExceptionType.connectionTimeout:
-        return ApiException('Connection timeout');
+        return ApiException('Tempo limite de conexão excedido');
       case DioExceptionType.receiveTimeout:
-        return ApiException('Receive timeout');
+        return ApiException('Tempo limite de recebimento excedido');
       case DioExceptionType.sendTimeout:
-        return ApiException('Send timeout');
+        return ApiException('Tempo limite de envio excedido');
       case DioExceptionType.unknown:
       default:
         return ApiException(AppConstants.genericError);

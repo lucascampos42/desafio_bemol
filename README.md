@@ -83,6 +83,13 @@ flutter test
 
 ---
 
+---
+
+## 📜 Licença
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
 ## ✅ Critérios de Avaliação
 - Funcionalidade completa conforme requisitos.  
 - Código limpo e organizado.  
