@@ -163,7 +163,7 @@ void main() {
         await tester.pumpAndSettle();
 
         // Digitar termo de busca
-        await tester.enterText(searchField, 'electronics');
+        await tester.enterText(searchField, 'shirt');
         await tester.pumpAndSettle();
         await tester.pumpAndSettle(
           const Duration(milliseconds: 500),
@@ -172,7 +172,7 @@ void main() {
         // Assert - Verificar se resultados foram filtrados
         expect(find.byType(ListView), findsOneWidget);
 
-        // Verificar se apenas produtos da categoria electronics são mostrados
+        // Verificar se produtos com 'shirt' no título são mostrados
         final productCards = find.byType(Card);
         expect(productCards, findsWidgets);
       });
@@ -189,7 +189,7 @@ void main() {
 
         // Fazer uma busca primeiro
         await tester.tap(searchField);
-        await tester.enterText(searchField, 'electronics');
+        await tester.enterText(searchField, 'shirt');
         await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
         // Act - Limpar busca

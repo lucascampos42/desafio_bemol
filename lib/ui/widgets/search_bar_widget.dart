@@ -64,7 +64,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
               fontSize: isDesktop ? 16 : 14,
             ),
             decoration: InputDecoration(
-              hintText: isDesktop ? 'Search products by name, category...' : 'Search Products...',
+              hintText: isDesktop ? 'Search products by name...' : 'Search Products...',
               hintStyle: TextStyle(
                 fontSize: isDesktop ? 16 : 14,
                 color: Colors.grey[600],
