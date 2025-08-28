@@ -86,8 +86,7 @@ class EnhancedErrorWidget extends StatelessWidget {
         color = AppTheme.errorColor;
         break;
       case ErrorType.generic:
-      default:
-        icon = Icons.error_outline;
+      icon = Icons.error_outline;
         color = AppTheme.errorColor;
         break;
     }
@@ -149,7 +148,7 @@ class EnhancedErrorWidget extends StatelessWidget {
         color: AppTheme.backgroundColor,
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: AppTheme.textHint.withOpacity(0.3),
+          color: AppTheme.textHint,
         ),
       ),
       child: Row(
@@ -183,25 +182,23 @@ class EnhancedErrorWidget extends StatelessWidget {
         return 'assets/images/empty.png';
       case ErrorType.storage:
       case ErrorType.generic:
-      default:
-        return 'assets/images/erro.png';
+      return 'assets/images/erro.png';
     }
   }
 
   String _getErrorTitle() {
     switch (errorType) {
       case ErrorType.network:
-        return 'No connection';
+        return 'No Connection';
       case ErrorType.server:
-        return 'Server error';
+        return 'Server Error';
       case ErrorType.timeout:
         return 'Timeout';
       case ErrorType.notFound:
-        return 'Nothing found';
+        return 'Not Found';
       case ErrorType.storage:
-        return 'Storage error';
+        return 'Storage Error';
       case ErrorType.generic:
-      default:
         return 'Oops! Something went wrong';
     }
   }
@@ -209,17 +206,16 @@ class EnhancedErrorWidget extends StatelessWidget {
   String _getRetryButtonText() {
     switch (errorType) {
       case ErrorType.network:
-        return 'Check connection';
+        return 'Check Connection';
       case ErrorType.server:
       case ErrorType.timeout:
-        return 'Try again';
+        return 'Try Again';
       case ErrorType.notFound:
-        return 'Search again';
+        return 'Search Again';
       case ErrorType.storage:
         return 'Reload';
       case ErrorType.generic:
-      default:
-        return 'Try again';
+        return 'Try Again';
     }
   }
 
@@ -235,8 +231,7 @@ class EnhancedErrorWidget extends StatelessWidget {
         return 'Problem accessing device storage.';
       case ErrorType.notFound:
       case ErrorType.generic:
-      default:
-        return '';
+      return '';
     }
   }
 }

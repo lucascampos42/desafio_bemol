@@ -8,11 +8,19 @@ class ApiService {
   static ApiService? _instance;
   late final Dio _dio;
   
-  ApiService._internal() {
-    _initializeDio();
+  ApiService._internal([Dio? dio]) {
+    if (dio != null) {
+      _dio = dio;
+    } else {
+      _initializeDio();
+    }
   }
   
-  factory ApiService() {
+  factory ApiService([Dio? dio]) {
+    if (dio != null) {
+      // Para testes, sempre cria nova instância com Dio injetado
+      return ApiService._internal(dio);
+    }
     _instance ??= ApiService._internal();
     return _instance!;
   }

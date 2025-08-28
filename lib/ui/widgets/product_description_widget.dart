@@ -14,29 +14,27 @@ class ProductDescriptionWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Categoria
-        Container(
-          child: Row(
-            children: [
-              Image.asset(
-                'assets/images/category.png',
-                width: 24,
-                height: 24,
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  Helpers.capitalize(category),
-                  style: const TextStyle(
-                    color: AppTheme.textPrimary,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                    letterSpacing: 0.5,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+        Row(
+          children: [
+            Image.asset(
+              'assets/images/category.png',
+              width: 24,
+              height: 24,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                Helpers.capitalize(category),
+                style: const TextStyle(
+                  color: AppTheme.textPrimary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  letterSpacing: 0.5,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
         const SizedBox(height: 28),
         Row(

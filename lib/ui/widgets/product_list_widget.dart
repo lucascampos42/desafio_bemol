@@ -66,12 +66,10 @@ class ProductListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         // Indicador de carregamento no final da lista
         if (index == state.filteredProducts.length) {
-          return Padding(
-            padding: const EdgeInsets.all(16.0),
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Center(
-              child: AppAnimations.rotatingLoader(
-                size: 32,
-              ),
+              child: CircularProgressIndicator(),
             ),
           );
         }

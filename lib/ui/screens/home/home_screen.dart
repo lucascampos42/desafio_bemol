@@ -5,7 +5,6 @@ import '../../widgets/search_bar_widget.dart';
 import '../../widgets/product_list_widget.dart';
 import '../../widgets/favorites_badge_widget.dart';
 import '../../widgets/category_error_widget.dart';
-import '../../widgets/enhanced_error_widget.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
@@ -39,9 +38,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _initializeApp() async {
     try {
       await _productProvider.ensureInitialized();
-      
       await _productProvider.initializeWithApi();
-      await _productProvider.loadCategories(context);
+      if (mounted) {
+        await _productProvider.loadCategories(context);
+      }
     } catch (e) {
       debugPrint('Error during app initialization: $e');
       if (mounted) {
@@ -212,17 +212,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  ErrorType _getErrorType(String error) {
-    if (error.contains('conexão') || error.contains('internet')) {
-      return ErrorType.network;
-    } else if (error.contains('servidor') || error.contains('indisponível')) {
-      return ErrorType.server;
-    } else if (error.contains('tempo') || error.contains('limite')) {
-      return ErrorType.timeout;
-    } else {
-      return ErrorType.generic;
-    }
-  }
-
 }

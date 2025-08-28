@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../data/models/product.dart';
 import '../data/services/api_service.dart';
@@ -142,7 +141,9 @@ class ProductProvider extends ValueNotifier<ProductState> {
         error: errorInfo.message,
       );
       
-      ErrorHandler.showErrorToast(context, errorInfo);
+      if (context != null && context.mounted) {
+        ErrorHandler.showErrorToast(context, errorInfo);
+      }
     }
   }
 
@@ -187,7 +188,9 @@ class ProductProvider extends ValueNotifier<ProductState> {
         error: errorInfo.message,
       );
       
-      ErrorHandler.showErrorToast(context, errorInfo);
+      if (context != null && context.mounted) {
+        ErrorHandler.showErrorToast(context, errorInfo);
+      }
     }
   }
 

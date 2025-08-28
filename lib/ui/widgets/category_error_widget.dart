@@ -25,10 +25,10 @@ class CategoryErrorWidget extends StatelessWidget {
         ),
         padding: const EdgeInsets.all(AppConstants.smallPadding),
         decoration: BoxDecoration(
-          color: AppTheme.warningColor.withOpacity(0.1),
+          color: AppTheme.warningColor,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
-            color: AppTheme.warningColor.withOpacity(0.3),
+            color: AppTheme.warningColor,
             width: 1,
           ),
         ),
@@ -70,10 +70,10 @@ class CategoryErrorWidget extends StatelessWidget {
       margin: const EdgeInsets.all(AppConstants.defaultPadding),
       padding: const EdgeInsets.all(AppConstants.defaultPadding),
       decoration: BoxDecoration(
-        color: AppTheme.warningColor.withOpacity(0.1),
+        color: AppTheme.warningColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: AppTheme.warningColor.withOpacity(0.3),
+          color: AppTheme.warningColor,
           width: 1,
         ),
       ),

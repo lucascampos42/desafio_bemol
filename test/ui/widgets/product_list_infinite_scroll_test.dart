@@ -73,6 +73,9 @@ void main() {
 
       await tester.pump();
       
+      // Aguarda as animações terminarem
+      await tester.pump(const Duration(milliseconds: 500));
+      
       // Deve ter um produto e indicadores de loading (pode ter mais de um)
       expect(find.text('Produto 1'), findsOneWidget);
       expect(find.byType(CircularProgressIndicator), findsAtLeastNWidgets(1));

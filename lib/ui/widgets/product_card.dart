@@ -136,19 +136,16 @@ class _ProductCardState extends State<ProductCard>
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                margin: const EdgeInsets.only(left: 6, top: 14),
-                                child: AppAnimations.fadeIn(
-                                  child: Text(
-                                    Helpers.truncateText(widget.product.title, 55),
-                                    style: GoogleFonts.poppins(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
-                                      color: AppTheme.textPrimary,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
+                              AppAnimations.fadeIn(
+                                child: Text(
+                                  Helpers.truncateText(widget.product.title, 55),
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                    color: AppTheme.textPrimary,
                                   ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               Row(

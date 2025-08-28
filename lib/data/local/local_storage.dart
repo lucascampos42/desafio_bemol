@@ -19,21 +19,20 @@ class LocalStorage {
   /// Salva lista de produtos favoritos
   Future<bool> saveFavorites(List<Product> favorites) async {
     try {
-      print('💾 Saving ${favorites.length} favorites to SharedPreferences...');
+      AppLogger.info('Saving ${favorites.length} favorites to SharedPreferences...', LogTags.storage);
       final List<String> favoritesJson = favorites
           .map((product) => jsonEncode(product.toJson()))
           .toList();
       
       final result = await _prefs!.setStringList(AppConstants.favoritesKey, favoritesJson);
-      print('💾 Save result: $result');
+      AppLogger.info('Save result: $result', LogTags.storage);
       
-      // Verificar se foi salvo
       final saved = _prefs!.getStringList(AppConstants.favoritesKey);
-      print('💾 Verification - saved items count: ${saved?.length ?? 0}');
+      AppLogger.info('Verification - saved items count: ${saved?.length ?? 0}', LogTags.storage);
       
       return result;
     } catch (e) {
-      print('❌ Error saving favorites: $e');
+      AppLogger.error('Error saving favorites', e, null, LogTags.storage);
       return false;
     }
   }
@@ -51,7 +50,7 @@ class LocalStorage {
           .map((json) => Product.fromJson(jsonDecode(json)))
           .toList();
     } catch (e) {
-      print('Error loading favorites: $e');
+      AppLogger.error('Error loading favorites', e, null, LogTags.storage);
       return [];
     }
   }
@@ -69,7 +68,7 @@ class LocalStorage {
       
       return true;
     } catch (e) {
-      print('Error adding favorite: $e');
+      AppLogger.error('Error adding favorite', e, null, LogTags.storage);
       return false;
     }
   }
@@ -81,7 +80,7 @@ class LocalStorage {
       favorites.removeWhere((product) => product.id == productId);
       return await saveFavorites(favorites);
     } catch (e) {
-      print('Error removing favorite: $e');
+      AppLogger.error('Error removing favorite', e, null, LogTags.storage);
       return false;
     }
   }

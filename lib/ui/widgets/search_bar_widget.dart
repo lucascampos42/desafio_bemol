@@ -42,7 +42,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black,
               spreadRadius: 1,
               blurRadius: 4,
               offset: const Offset(0, 2),
