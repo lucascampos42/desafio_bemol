@@ -96,11 +96,9 @@ class ProductCard extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      // Segunda linha: Rating + Botão de favorito
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Rating
                           Row(
                             children: [
                                 const Icon(
@@ -159,26 +157,7 @@ class ProductCard extends StatelessWidget {
                               fontSize: 20,
                               color: Color(0xFFF37A20),
                             ),
-                          ),
-                          // Categoria
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppTheme.primaryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              Helpers.capitalize(product.category).toUpperCase(),
-                              style: const TextStyle(
-                                color: AppTheme.primaryColor,
-                                fontSize: 10,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
+                          ),                          
                         ],
                       ),
                     ],
