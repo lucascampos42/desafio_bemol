@@ -32,10 +32,10 @@ class ErrorScreen extends StatelessWidget {
                 );
               },
               child: const Text(
-                'GO HOME',
+                'Go Home',
                 style: TextStyle(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   color: Colors.blue,
                 ),
               ),
