@@ -7,42 +7,42 @@ class ErrorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/erro.png',
-              width: 200,
-              height: 200,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.wifi_off,
-                  size: 120,
-                  color: Colors.grey,
-                );
-              },
-            ),
-            const Spacer(),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/',
-                  (route) => false,
-                );
-              },
-              child: const Text(
-                'Go Home',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.blue,
-                ),
+      body: Column(
+        children: [
+          Expanded(
+            child: Center(
+              child: Image.asset(
+                'assets/images/erro.png',
+                width: 200,
+                height: 200,
+                errorBuilder: (context, error, stackTrace) {
+                  return const Icon(
+                    Icons.wifi_off,
+                    size: 120,
+                    color: Colors.grey,
+                  );
+                },
               ),
             ),
-            const SizedBox(height: 60),
-          ],
-        ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                '/',
+                (route) => false,
+              );
+            },
+            child: const Text(
+              'Go Home',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          const SizedBox(height: 60),
+        ],
       ),
     );
   }
