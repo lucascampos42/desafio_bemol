@@ -48,7 +48,7 @@ class PerformanceMetrics {
   }
 
   /// Registra evento personalizado
-  void logEvent(String event, {Map<String, dynamic>? data}) {
+  void logEvent(String event, Map<String, dynamic>? data) {
     final logData = data != null ? ' - Data: $data' : '';
     AppLogger.info('📝 Event: $event$logData', LogTags.performance);
   }
@@ -68,7 +68,7 @@ class PerformanceMetrics {
   }
 
   /// Mede tempo de execução de uma função síncrona
-  T measureSync<T>(String operation, T Function() function) {
+  T measure<T>(String operation, T Function() function) {
     startTimer(operation);
     try {
       final result = function();
@@ -79,6 +79,11 @@ class PerformanceMetrics {
       AppLogger.error('❌ Error in $operation', e, null, LogTags.performance);
       rethrow;
     }
+  }
+
+  /// Alias para compatibilidade
+  T measureSync<T>(String operation, T Function() function) {
+    return measure(operation, function);
   }
 
   /// Obtém estatísticas de uma operação
@@ -115,6 +120,33 @@ class PerformanceMetrics {
       }
     }
     return stats;
+  }
+
+  /// Obtém estatísticas em formato compatível com testes
+  Map<String, Map<String, dynamic>> getStatistics() {
+    final result = <String, Map<String, dynamic>>{};
+    
+    // Adiciona estatísticas de timing
+    for (final operation in _durations.keys) {
+      final durations = _durations[operation]!;
+      if (durations.isNotEmpty) {
+        final sum = durations.reduce((a, b) => a + b);
+        result[operation] = {
+          'count': durations.length,
+          'total_duration': sum,
+          'average_duration': sum / durations.length,
+        };
+      }
+    }
+    
+    // Adiciona contadores
+    for (final entry in _counters.entries) {
+      result[entry.key] = {
+        'count': entry.value,
+      };
+    }
+    
+    return result;
   }
 
   /// Obtém todos os contadores
@@ -166,6 +198,11 @@ class PerformanceMetrics {
     AppLogger.info('🧹 Performance metrics cleared', LogTags.performance);
   }
 
+  /// Alias para compatibilidade com testes
+  void reset() {
+    clear();
+  }
+
   /// Monitora uso de memória (apenas em debug)
   void logMemoryUsage(String context) {
     if (kDebugMode) {
@@ -210,31 +247,46 @@ class PerformanceStats {
 /// Extensão para facilitar uso das métricas
 extension PerformanceExtension on PerformanceMetrics {
   /// Métricas específicas para operações de API
-  void trackApiCall(String endpoint) {
+  void trackApiCall(String endpoint, String status) {
     incrementCounter('api_calls_total');
-    incrementCounter('api_calls_$endpoint');
+    incrementCounter('api_$endpoint');
+    logEvent('api_call', {
+      'endpoint': endpoint,
+      'status': status,
+    });
   }
 
   /// Métricas específicas para operações de UI
-  void trackScreenNavigation(String screenName) {
+  void trackScreenNavigation(String screenName, [Map<String, dynamic>? data]) {
     incrementCounter('screen_navigations_total');
-    incrementCounter('screen_navigations_$screenName');
-    logEvent('screen_navigation', {'screen': screenName});
+    incrementCounter('navigation_$screenName');
+    logEvent('screen_navigation', {
+      'screen': screenName,
+      ...?data,
+    });
   }
 
   /// Métricas específicas para operações de favoritos
-  void trackFavoriteAction(String action) {
+  void trackFavoriteAction(int productId, String action) {
     incrementCounter('favorite_actions_total');
-    incrementCounter('favorite_actions_$action');
+    incrementCounter('favorite_$action');
+    logEvent('favorite_action', {
+      'product_id': productId.toString(),
+      'action': action,
+    });
   }
 
   /// Métricas específicas para busca
   void trackSearchAction(String query) {
-    incrementCounter('search_actions_total');
+    incrementCounter('search_action');
     if (query.isNotEmpty) {
       incrementCounter('search_with_query');
     } else {
       incrementCounter('search_cleared');
     }
+    logEvent('search_action', {
+      'query_length': query.length.toString(),
+      'has_query': query.isNotEmpty.toString(),
+    });
   }
 }

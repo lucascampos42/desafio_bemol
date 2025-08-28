@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'core/theme/app_theme.dart';
 import 'data/services/api_service.dart';
+import 'core/utils/performance_metrics.dart';
 import 'ui/screens/home/home_screen.dart';
 
 void main() async {
@@ -17,6 +18,9 @@ Future<void> _initializeServices() async {
     await SharedPreferences.getInstance();
     
     ApiService.instance;
+    
+    // Inicializa métricas de performance
+    PerformanceMetrics.instance.logEvent('app_startup', {'timestamp': DateTime.now().toIso8601String()});
     
     debugPrint('✅ Services initialized successfully');
   } catch (e) {
@@ -34,6 +38,17 @@ class DesafioBemolApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
+      // Exemplo de como visualizar métricas de performance
+      // Descomente as linhas abaixo para ver relatório no console
+      // builder: (context, child) {
+      //   WidgetsBinding.instance.addPostFrameCallback((_) {
+      //     Future.delayed(const Duration(seconds: 10), () {
+      //       final report = PerformanceMetrics.instance.generateReport();
+      //       debugPrint('📊 Performance Report:\n$report');
+      //     });
+      //   });
+      //   return child!;
+      // },
     );
   }
 }

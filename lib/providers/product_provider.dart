@@ -125,7 +125,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
         ),
       );
       
-      PerformanceMetrics.instance.trackApiCall('products');
+      PerformanceMetrics.instance.trackApiCall('products', 'success');
       
       value = value.copyWith(
         products: products,
@@ -168,7 +168,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
         ),
       );
       
-      PerformanceMetrics.instance.trackApiCall('products_pagination');
+      PerformanceMetrics.instance.trackApiCall('products_pagination', 'success');
       
       final allProducts = [...value.products, ...newProducts];
       
@@ -206,7 +206,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
         () => _apiService.getCategories(),
       );
       
-      PerformanceMetrics.instance.trackApiCall('categories');
+      PerformanceMetrics.instance.trackApiCall('categories', 'success');
       
       value = value.copyWith(
         categories: categories,

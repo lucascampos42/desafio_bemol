@@ -6,6 +6,7 @@ import '../../widgets/product_card.dart';
 import '../../widgets/state_widgets.dart';
 import '../error/error_screen.dart';
 import '../product_detail/product_detail_screen.dart';
+import '../../../core/utils/performance_metrics.dart';
 
 class FavoritesScreen extends StatefulWidget {
   final ProductProvider productProvider;
@@ -25,6 +26,12 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   void initState() {
     super.initState();
+    
+    PerformanceMetrics.instance.trackScreenNavigation(
+      'favorites_screen_loaded',
+      {'favorites_count': widget.productProvider.value.favorites.length.toString()},
+    );
+    
     // Carrega favoritos após o build inicial para evitar setState durante build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
@@ -34,10 +41,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   }
 
   Future<void> _navigateToProductDetail(BuildContext context, Product product) async {
+    PerformanceMetrics.instance.trackScreenNavigation(
+      'favorites_to_product_detail',
+      {'product_id': product.id.toString()},
+    );
+    
     await Navigator.push(
       context,
       AppAnimations.createRoute(
-        ProductDetailScreen(
+        page: ProductDetailScreen(
           product: product,
           productProvider: widget.productProvider,
         ),
@@ -116,7 +128,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       itemCount: state.favorites.length,
       itemBuilder: (context, index) {
         final product = state.favorites[index];
-        return AppAnimations.animatedListItem(
+        return AnimatedListItem(
           index: index,
           child: ProductCard(
             product: product,
