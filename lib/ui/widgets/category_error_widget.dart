@@ -99,7 +99,7 @@ class CategoryErrorWidget extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('Tentar novamente'),
+              label: const Text('Try again'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.warningColor,
                 foregroundColor: Colors.white,

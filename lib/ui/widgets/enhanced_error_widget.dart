@@ -191,48 +191,48 @@ class EnhancedErrorWidget extends StatelessWidget {
   String _getErrorTitle() {
     switch (errorType) {
       case ErrorType.network:
-        return 'Sem conexão';
+        return 'No connection';
       case ErrorType.server:
-        return 'Erro do servidor';
+        return 'Server error';
       case ErrorType.timeout:
-        return 'Tempo esgotado';
+        return 'Timeout';
       case ErrorType.notFound:
-        return 'Nada encontrado';
+        return 'Nothing found';
       case ErrorType.storage:
-        return 'Erro de armazenamento';
+        return 'Storage error';
       case ErrorType.generic:
       default:
-        return 'Ops! Algo deu errado';
+        return 'Oops! Something went wrong';
     }
   }
 
   String _getRetryButtonText() {
     switch (errorType) {
       case ErrorType.network:
-        return 'Verificar conexão';
+        return 'Check connection';
       case ErrorType.server:
       case ErrorType.timeout:
-        return 'Tentar novamente';
+        return 'Try again';
       case ErrorType.notFound:
-        return 'Buscar novamente';
+        return 'Search again';
       case ErrorType.storage:
-        return 'Recarregar';
+        return 'Reload';
       case ErrorType.generic:
       default:
-        return 'Tentar novamente';
+        return 'Try again';
     }
   }
 
   String _getHelpText() {
     switch (errorType) {
       case ErrorType.network:
-        return 'Verifique sua conexão com a internet e tente novamente.';
+        return 'Check your internet connection and try again.';
       case ErrorType.server:
-        return 'Nossos servidores estão temporariamente indisponíveis.';
+        return 'Our servers are temporarily unavailable.';
       case ErrorType.timeout:
-        return 'A operação demorou mais que o esperado.';
+        return 'The operation took longer than expected.';
       case ErrorType.storage:
-        return 'Problema ao acessar o armazenamento do dispositivo.';
+        return 'Problem accessing device storage.';
       case ErrorType.notFound:
       case ErrorType.generic:
       default:

@@ -40,7 +40,7 @@ class FavoritesManager {
       );
     } catch (e) {
       AppLogger.error('Erro ao carregar favoritos do armazenamento local', e, null, LogTags.favorites);
-      return FavoritesResult.error('Erro ao carregar favoritos. Verifique o armazenamento do dispositivo.');
+      return FavoritesResult.error('Error loading favorites. Check device storage.');
     }
   }
   
@@ -66,21 +66,21 @@ class FavoritesManager {
         AppLogger.success('Produto adicionado aos favoritos com sucesso', LogTags.favorites);
         
         if (context != null && context.mounted) {
-          ToastHelper.showSuccess(context, 'Adicionado aos favoritos');
+          ToastHelper.showSuccess(context, 'Added to favorites');
         }
         
         return FavoriteToggleResult.success(product.id, true);
       } else {
-        return FavoriteToggleResult.error('Falha ao adicionar aos favoritos');
+        return FavoriteToggleResult.error('Failed to add to favorites');
       }
     } catch (e) {
       AppLogger.error('Erro ao adicionar favorito', e, null, LogTags.favorites);
       
       if (context != null && context.mounted) {
-        ToastHelper.showError(context, 'Erro ao salvar favorito. Tente novamente.');
+        ToastHelper.showError(context, 'Error saving favorite. Try again.');
       }
       
-      return FavoriteToggleResult.error('Erro ao atualizar favoritos. Tente novamente.');
+      return FavoriteToggleResult.error('Error updating favorites. Try again.');
     }
   }
   
@@ -106,12 +106,12 @@ class FavoritesManager {
         AppLogger.success('Produto removido dos favoritos com sucesso', LogTags.favorites);
         
         if (context != null && context.mounted) {
-          ToastHelper.showInfo(context, 'Removido dos favoritos');
+          ToastHelper.showInfo(context, 'Removed from favorites');
         }
         
         return FavoriteToggleResult.success(productId, false);
       } else {
-        return FavoriteToggleResult.error('Falha ao remover dos favoritos');
+        return FavoriteToggleResult.error('Failed to remove from favorites');
       }
     } catch (e) {
       AppLogger.error('Erro ao remover favorito', e, null, LogTags.favorites);

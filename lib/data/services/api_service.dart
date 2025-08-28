@@ -96,7 +96,7 @@ class ApiService {
         AppLogger.success('${products.length} produtos carregados (offset: $offset, limit: $limit)', LogTags.api);
         return products;
       } else {
-        throw ApiException('Erro ao carregar produtos: ${response.statusCode}');
+        throw ApiException('Error loading products: ${response.statusCode}');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -153,7 +153,7 @@ class ApiService {
         AppLogger.success('${products.length} produtos da categoria "$category" carregados', LogTags.api);
         return products;
       } else {
-        throw ApiException('Erro ao carregar produtos da categoria');
+        throw ApiException('Error loading products from category');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -172,7 +172,7 @@ class ApiService {
         AppLogger.success('${categories.length} categorias carregadas: ${categories.join(", ")}', LogTags.api);
         return categories;
       } else {
-        throw ApiException('Erro ao carregar categorias');
+        throw ApiException('Error loading categories');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -188,9 +188,9 @@ class ApiService {
         if (e.response?.statusCode == 404) {
           return ApiException(AppConstants.notFoundError);
         }
-        return ApiException('Erro do servidor: ${e.response?.statusCode}');
+        return ApiException('Server error: ${e.response?.statusCode}');
       case DioExceptionType.cancel:
-        return ApiException('Requisição cancelada');
+        return ApiException('Request cancelled');
       case DioExceptionType.connectionTimeout:
         return ApiException('Tempo limite de conexão excedido');
       case DioExceptionType.receiveTimeout:

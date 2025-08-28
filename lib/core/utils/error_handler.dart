@@ -32,7 +32,7 @@ class ErrorHandler {
     
     if (errorString.contains('SocketException') || 
         errorString.contains('NetworkException')) {
-      errorMessage = 'Sem conexão com a internet';
+      errorMessage = 'No internet connection';
       errorType = ErrorType.network;
     } else if (errorString.contains('TimeoutException')) {
       errorMessage = 'Tempo limite excedido';
@@ -82,8 +82,8 @@ class ErrorHandler {
     final errorInfo = analyzeError(error);
     return ErrorInfo(
       message: errorInfo.type == ErrorType.network 
-        ? 'Sem conexão com a internet'
-        : 'Erro ao carregar produtos',
+        ? 'No internet connection'
+        : 'Error loading products',
       type: errorInfo.type
     );
   }
@@ -93,8 +93,8 @@ class ErrorHandler {
     final errorInfo = analyzeError(error);
     return ErrorInfo(
       message: errorInfo.type == ErrorType.network 
-        ? 'Sem conexão para carregar categorias'
-        : 'Filtros por categoria indisponíveis',
+        ? 'No connection to load categories'
+        : 'Category filters unavailable',
       type: errorInfo.type
     );
   }

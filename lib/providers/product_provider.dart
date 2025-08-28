@@ -69,7 +69,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     } catch (localError) {
       AppLogger.error('Erro crítico ao inicializar local storage', localError, null, LogTags.provider);
       _isInitialized = false;
-      value = value.copyWith(error: 'Erro ao inicializar armazenamento local. Tente reiniciar o app.');
+      value = value.copyWith(error: 'Error initializing local storage. Try restarting the app.');
     }
   }
   
@@ -308,7 +308,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   Future<void> toggleFavorite(Product product, [BuildContext? context]) async {
     await ensureInitialized();
     if (_favoritesManager == null) {
-      value = value.copyWith(error: 'Erro ao inicializar favoritos');
+      value = value.copyWith(error: 'Error initializing favorites');
       return;
     }
     
