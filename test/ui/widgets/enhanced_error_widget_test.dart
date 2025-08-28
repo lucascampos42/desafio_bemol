@@ -10,7 +10,6 @@ void main() {
     });
 
     setUp(() {
-      // Setup is handled in createTestWidget
     });
 
     Widget createTestWidget({
@@ -206,7 +205,6 @@ void main() {
     testWidgets('should be centered in the screen', (WidgetTester tester) async {
       await tester.pumpWidget(createTestWidget(message: 'Test error'));
       
-      // Verify that the error widget is properly centered
       expect(find.byType(EnhancedErrorWidget), findsOneWidget);
       expect(find.text('Test error'), findsOneWidget);
     });

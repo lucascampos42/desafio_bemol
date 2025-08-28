@@ -17,7 +17,6 @@ class ProductRatingAndPriceWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          // Rating
           Expanded(
             child: Row(
               children: [
@@ -52,7 +51,6 @@ class ProductRatingAndPriceWidget extends StatelessWidget {
             ),
           ),
           
-          // Preço
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [

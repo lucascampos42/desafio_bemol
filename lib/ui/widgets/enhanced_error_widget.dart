@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/constants.dart';
 
-/// Enhanced widget to display different types of errors with appropriate visual feedback
+/// Widget aprimorado para exibir diferentes tipos de erros com feedback visual apropriado
 class EnhancedErrorWidget extends StatelessWidget {
   final String message;
   final VoidCallback? onRetry;
@@ -236,7 +236,7 @@ class EnhancedErrorWidget extends StatelessWidget {
   }
 }
 
-/// Error types to customize display
+/// Tipos de erro para personalizar a exibição
 enum ErrorType {
   network,
   server,

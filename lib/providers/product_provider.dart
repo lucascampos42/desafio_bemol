@@ -366,7 +366,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
   /// Atualiza o estado dos favoritos após toggle
   void _updateFavoritesState(Product product, bool isFavorite) {
     if (isFavorite) {
-      // Adicionar aos favoritos
       final newFavorites = [...value.favorites, product];
       final newFavoriteIds = Set<int>.from(value.favoriteIds)..add(product.id);
       
@@ -375,7 +374,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
         favoriteIds: newFavoriteIds,
       );
     } else {
-      // Remover dos favoritos
       final newFavorites = value.favorites.where((p) => p.id != product.id).toList();
       final newFavoriteIds = Set<int>.from(value.favoriteIds)..remove(product.id);
       

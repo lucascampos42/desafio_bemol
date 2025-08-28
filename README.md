@@ -107,15 +107,6 @@ integration_test/                # Testes de integração
 
 ### Comandos para Executar o Projeto
 
-#### 🖥️ Desktop (Windows)
-```bash
-# Executar em modo debug
-flutter run -d windows
-
-# Build para produção
-flutter build windows
-```
-
 #### 🌐 Navegador Web
 ```bash
 # Executar no Chrome (modo debug)
@@ -225,6 +216,8 @@ flutter test integration_test/app_integration_test.dart
 - ✅ Scroll infinito
 - ✅ Tratamento de erros
 - ✅ Performance com muitos produtos
+
+⚠️ **Observação**: Nem todos os testes de integração estão passando devido a limitações de dados da API ou compatibilidade. Eles foram adicionados para demonstrar a capacidade de escrita de testes de integração.
 
 ### Executar Todos os Testes
 ```bash
