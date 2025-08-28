@@ -53,7 +53,7 @@ void main() {
       ));
       
       expect(find.byIcon(Icons.wifi_off), findsOneWidget);
-      expect(find.text('Sem conexão'), findsOneWidget);
+      expect(find.text('No Connection'), findsOneWidget);
     });
 
     testWidgets('should display correct icon for server error', (WidgetTester tester) async {
@@ -64,7 +64,7 @@ void main() {
       ));
       
       expect(find.byIcon(Icons.cloud_off), findsOneWidget);
-      expect(find.text('Erro do servidor'), findsOneWidget);
+      expect(find.text('Server Error'), findsOneWidget);
     });
 
     testWidgets('should display correct icon for timeout error', (WidgetTester tester) async {
@@ -75,7 +75,7 @@ void main() {
       ));
       
       expect(find.byIcon(Icons.access_time), findsOneWidget);
-      expect(find.text('Tempo esgotado'), findsOneWidget);
+      expect(find.text('Timeout'), findsOneWidget);
     });
 
     testWidgets('should display correct icon for not found error', (WidgetTester tester) async {
@@ -86,7 +86,7 @@ void main() {
       ));
       
       expect(find.byIcon(Icons.search_off), findsOneWidget);
-      expect(find.text('Nada encontrado'), findsOneWidget);
+      expect(find.text('Not Found'), findsOneWidget);
     });
 
     testWidgets('should display correct icon for storage error', (WidgetTester tester) async {
@@ -97,7 +97,7 @@ void main() {
       ));
       
       expect(find.byIcon(Icons.storage), findsOneWidget);
-      expect(find.text('Erro de armazenamento'), findsOneWidget);
+      expect(find.text('Storage Error'), findsOneWidget);
     });
 
     testWidgets('should display correct icon for generic error', (WidgetTester tester) async {
@@ -108,7 +108,7 @@ void main() {
       ));
       
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
-      expect(find.text('Ops! Algo deu errado'), findsOneWidget);
+      expect(find.text('Oops! Something went wrong'), findsOneWidget);
     });
 
     testWidgets('should show retry button when onRetry is provided', (WidgetTester tester) async {
@@ -119,10 +119,10 @@ void main() {
         onRetry: () => retryPressed = true,
       ));
       
-      expect(find.text('Tentar novamente'), findsOneWidget);
+      expect(find.text('Try Again'), findsOneWidget);
       expect(find.byIcon(Icons.refresh), findsOneWidget);
       
-      await tester.tap(find.text('Tentar novamente'));
+      await tester.tap(find.text('Try Again'));
       await tester.pump();
       
       expect(retryPressed, isTrue);
@@ -134,7 +134,7 @@ void main() {
         onRetry: null,
       ));
       
-      expect(find.text('Tentar novamente'), findsNothing);
+      expect(find.text('Try Again'), findsNothing);
       expect(find.byIcon(Icons.refresh), findsNothing);
     });
 
@@ -145,7 +145,7 @@ void main() {
         onRetry: () {},
       ));
       
-      expect(find.text('Verificar conexão'), findsOneWidget);
+      expect(find.text('Check Connection'), findsOneWidget);
     });
 
     testWidgets('should show correct retry button text for not found error', (WidgetTester tester) async {
@@ -155,7 +155,7 @@ void main() {
         onRetry: () {},
       ));
       
-      expect(find.text('Buscar novamente'), findsOneWidget);
+      expect(find.text('Search Again'), findsOneWidget);
     });
 
     testWidgets('should show help text for network error', (WidgetTester tester) async {
@@ -164,7 +164,7 @@ void main() {
         errorType: ErrorType.network,
       ));
       
-      expect(find.text('Verifique sua conexão com a internet e tente novamente.'), findsOneWidget);
+      expect(find.text('Check your internet connection and try again.'), findsOneWidget);
       expect(find.byIcon(Icons.info_outline), findsOneWidget);
     });
 
@@ -174,7 +174,7 @@ void main() {
         errorType: ErrorType.server,
       ));
       
-      expect(find.text('Nossos servidores estão temporariamente indisponíveis.'), findsOneWidget);
+      expect(find.text('Our servers are temporarily unavailable.'), findsOneWidget);
     });
 
     testWidgets('should not show help text for generic error', (WidgetTester tester) async {

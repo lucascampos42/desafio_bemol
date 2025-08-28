@@ -1,17 +1,17 @@
 import 'package:flutter/foundation.dart';
 
-/// Sistema de logging centralizado para o aplicativo
+/// Centralized logging system for the application
 class AppLogger {
   static const String _tag = 'DesafioBemol';
   
-  /// Log de informação
+  /// Information log
   static void info(String message, [String? tag]) {
     if (kDebugMode) {
       debugPrint('[$_tag${tag != null ? ':$tag' : ''}] INFO: $message');
     }
   }
   
-  /// Log de erro
+  /// Error log
   static void error(String message, [dynamic error, StackTrace? stackTrace, String? tag]) {
     if (kDebugMode) {
       debugPrint('[$_tag${tag != null ? ':$tag' : ''}] ERROR: $message');
@@ -24,21 +24,21 @@ class AppLogger {
     }
   }
   
-  /// Log de warning
+  /// Warning log
   static void warning(String message, [String? tag]) {
     if (kDebugMode) {
       debugPrint('[$_tag${tag != null ? ':$tag' : ''}] WARNING: $message');
     }
   }
   
-  /// Log de debug
+  /// Debug log
   static void debug(String message, [String? tag]) {
     if (kDebugMode) {
       debugPrint('[$_tag${tag != null ? ':$tag' : ''}] DEBUG: $message');
     }
   }
   
-  /// Log de sucesso
+  /// Success log
   static void success(String message, [String? tag]) {
     if (kDebugMode) {
       debugPrint('[$_tag${tag != null ? ':$tag' : ''}] SUCCESS: $message');
@@ -46,7 +46,7 @@ class AppLogger {
   }
 }
 
-/// Tags específicas para diferentes módulos
+/// Specific tags for different modules
 class LogTags {
   static const String api = 'API';
   static const String storage = 'STORAGE';

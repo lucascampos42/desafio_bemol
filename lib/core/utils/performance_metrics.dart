@@ -35,7 +35,7 @@ class PerformanceMetrics {
 
     AppLogger.info('⏱️ $operation completed in ${duration}ms', LogTags.performance);
     
-    // Log warning para operações lentas
+    // Log warning for slow operations
     if (duration > 1000) {
       AppLogger.warning('🐌 Slow operation detected: $operation took ${duration}ms', LogTags.performance);
     }
@@ -126,7 +126,7 @@ class PerformanceMetrics {
   Map<String, Map<String, dynamic>> getStatistics() {
     final result = <String, Map<String, dynamic>>{};
     
-    // Adiciona estatísticas de timing
+    // Add timing statistics
     for (final operation in _durations.keys) {
       final durations = _durations[operation]!;
       if (durations.isNotEmpty) {
@@ -139,7 +139,7 @@ class PerformanceMetrics {
       }
     }
     
-    // Adiciona contadores
+    // Add counters
     for (final entry in _counters.entries) {
       result[entry.key] = {
         'count': entry.value,
@@ -158,7 +158,7 @@ class PerformanceMetrics {
     buffer.writeln('📊 PERFORMANCE REPORT');
     buffer.writeln('=' * 50);
     
-    // Estatísticas de tempo
+    // Timing statistics
     buffer.writeln('\n⏱️ TIMING STATISTICS:');
     final stats = getAllStats();
     if (stats.isEmpty) {
@@ -176,7 +176,7 @@ class PerformanceMetrics {
       }
     }
 
-    // Contadores
+    // Counters
     buffer.writeln('📊 COUNTERS:');
     final counters = getAllCounters();
     if (counters.isEmpty) {
@@ -207,7 +207,7 @@ class PerformanceMetrics {
   void logMemoryUsage(String context) {
     if (kDebugMode) {
       try {
-        // Força garbage collection para medição mais precisa
+        // Force garbage collection for more accurate measurement
         SystemChannels.platform.invokeMethod('SystemChrome.setApplicationSwitcherDescription');
         
         AppLogger.info('🧠 Memory check at: $context', LogTags.performance);

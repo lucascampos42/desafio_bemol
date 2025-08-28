@@ -186,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           isSearching: state.isSearching,
                           onClear: _clearFilters,
                         ),
-                        // Exibe erro de categorias se houver
+                        // Show category error if any
                         if (state.hasCategoriesError)
                           CategoryErrorWidget(
                             message: state.categoriesError!,

@@ -32,14 +32,14 @@ class FavoritesManager {
       final favorites = await _localStorage.loadFavorites();
       final favoriteIds = favorites.map((p) => p.id).toSet();
       
-      AppLogger.success('${favorites.length} favoritos carregados do armazenamento local', LogTags.favorites);
+      AppLogger.success('${favorites.length} favorites loaded from local storage', LogTags.favorites);
       
       return FavoritesResult.success(
         favorites: favorites,
         favoriteIds: favoriteIds,
       );
     } catch (e) {
-      AppLogger.error('Erro ao carregar favoritos do armazenamento local', e, null, LogTags.favorites);
+      AppLogger.error('Error loading favorites from local storage', e, null, LogTags.favorites);
       return FavoritesResult.error('Error loading favorites. Check device storage.');
     }
   }
@@ -58,12 +58,12 @@ class FavoritesManager {
   /// Retorna [FavoriteToggleResult] indicando sucesso/erro da operação
   Future<FavoriteToggleResult> addToFavorites(Product product, BuildContext? context) async {
     try {
-      AppLogger.debug('➕ Adicionando produto aos favoritos: ${product.title} (ID: ${product.id})', LogTags.favorites);
+      AppLogger.debug('➕ Adding product to favorites: ${product.title} (ID: ${product.id})', LogTags.favorites);
       
       final success = await _localStorage.addToFavorites(product);
       
       if (success) {
-        AppLogger.success('Produto adicionado aos favoritos com sucesso', LogTags.favorites);
+        AppLogger.success('Product added to favorites successfully', LogTags.favorites);
         
         if (context != null && context.mounted) {
           ToastHelper.showSuccess(context, 'Added to favorites');
@@ -74,7 +74,7 @@ class FavoritesManager {
         return FavoriteToggleResult.error('Failed to add to favorites');
       }
     } catch (e) {
-      AppLogger.error('Erro ao adicionar favorito', e, null, LogTags.favorites);
+      AppLogger.error('Error adding favorite', e, null, LogTags.favorites);
       
       if (context != null && context.mounted) {
         ToastHelper.showError(context, 'Error saving favorite. Try again.');
@@ -98,12 +98,12 @@ class FavoritesManager {
   /// Retorna [FavoriteToggleResult] indicando sucesso/erro da operação
   Future<FavoriteToggleResult> removeFromFavorites(int productId, BuildContext? context) async {
     try {
-      AppLogger.debug('➖ Removendo produto dos favoritos: ID $productId', LogTags.favorites);
+      AppLogger.debug('➖ Removing product from favorites: ID $productId', LogTags.favorites);
       
       final success = await _localStorage.removeFromFavorites(productId);
       
       if (success) {
-        AppLogger.success('Produto removido dos favoritos com sucesso', LogTags.favorites);
+        AppLogger.success('Product removed from favorites successfully', LogTags.favorites);
         
         if (context != null && context.mounted) {
           ToastHelper.showInfo(context, 'Removed from favorites');
@@ -114,13 +114,13 @@ class FavoritesManager {
         return FavoriteToggleResult.error('Failed to remove from favorites');
       }
     } catch (e) {
-      AppLogger.error('Erro ao remover favorito', e, null, LogTags.favorites);
+      AppLogger.error('Error removing favorite', e, null, LogTags.favorites);
       
       if (context != null && context.mounted) {
-        ToastHelper.showError(context, 'Erro ao salvar favorito. Tente novamente.');
+        ToastHelper.showError(context, 'Error saving favorite. Try again.');
       }
       
-      return FavoriteToggleResult.error('Erro ao atualizar favoritos. Tente novamente.');
+      return FavoriteToggleResult.error('Error updating favorites. Try again.');
     }
   }
   

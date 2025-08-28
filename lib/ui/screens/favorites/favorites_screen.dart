@@ -32,7 +32,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       {'favorites_count': widget.productProvider.value.favorites.length.toString()},
     );
     
-    // Carrega favoritos após o build inicial para evitar setState durante build
+    // Load favorites after initial build to avoid setState during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         widget.productProvider.loadFavoritesOnly();

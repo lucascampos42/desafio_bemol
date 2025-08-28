@@ -35,13 +35,13 @@ class ErrorHandler {
       errorMessage = 'No internet connection';
       errorType = ErrorType.network;
     } else if (errorString.contains('TimeoutException')) {
-      errorMessage = 'Tempo limite excedido';
+      errorMessage = 'Request timeout';
       errorType = ErrorType.timeout;
     } else if (errorString.contains('500') || errorString.contains('502')) {
-      errorMessage = 'Servidor temporariamente indisponível';
+      errorMessage = 'Server temporarily unavailable';
       errorType = ErrorType.server;
     } else {
-      errorMessage = 'Erro inesperado';
+      errorMessage = 'Unexpected error';
       errorType = ErrorType.generic;
     }
     

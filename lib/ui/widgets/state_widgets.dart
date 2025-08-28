@@ -72,7 +72,7 @@ class CustomErrorWidget extends StatelessWidget {
                       color: AppTheme.errorColor,
                     ),
             ),
-            // Só mostra textos se NÃO for erro de conexão
+            // Only show texts if NOT a connection error
             if (!_isConnectionError) ...[
               const SizedBox(height: AppConstants.defaultPadding),
               Text(
@@ -119,7 +119,7 @@ class EmptyWidget extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    // Se useErrorImageOnly for true, mostra apenas a imagem erro.png
+    // If useErrorImageOnly is true, show only the erro.png image
     if (useErrorImageOnly) {
       return Center(
         child: Image.asset(

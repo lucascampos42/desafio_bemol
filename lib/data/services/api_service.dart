@@ -58,32 +58,32 @@ class ApiService {
 
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (options, handler) {
-        AppLogger.info('Requisição: ${options.method} ${options.path}', LogTags.api);
+        AppLogger.info('Request: ${options.method} ${options.path}', LogTags.api);
         handler.next(options);
       },
       onResponse: (response, handler) {
-        AppLogger.success('Resposta: ${response.statusCode} ${response.requestOptions.path}', LogTags.api);
+        AppLogger.success('Response: ${response.statusCode} ${response.requestOptions.path}', LogTags.api);
         handler.next(response);
       },
       onError: (error, handler) {
-        AppLogger.error('Erro na API: ${error.message}', error, null, LogTags.api);
+        AppLogger.error('API Error: ${error.message}', error, null, LogTags.api);
         handler.next(error);
       },
     ));
   }
   
-  /// Carrega produtos com suporte a paginação
+  /// Loads products with pagination support
   /// 
-  /// [limit] - Número máximo de produtos a retornar (padrão: 20)
-  /// [offset] - Número de produtos a pular (para paginação)
+  /// [limit] - Maximum number of products to return (default: 20)
+  /// [offset] - Number of products to skip (for pagination)
   Future<List<Product>> getProducts({int limit = 20, int offset = 0}) async {
     try {
       final queryParams = {
         'limit': limit.toString(),
       };
       
-      // A fakestoreapi.com suporta apenas limit, não offset
-      // Para simular paginação, vamos usar limit e depois filtrar no cliente
+      // fakestoreapi.com only supports limit, not offset
+      // To simulate pagination, we'll use limit and then filter on client
       final response = await _dio.get(
         AppConstants.productsEndpoint,
         queryParameters: queryParams,
@@ -93,7 +93,7 @@ class ApiService {
         final List<dynamic> data = response.data;
         final allProducts = data.map((json) => Product.fromJson(json)).toList();
         
-        // Simula paginação no cliente já que a API não suporta offset
+        // Simulate pagination on client since API doesn't support offset
         final startIndex = offset;
         final endIndex = (startIndex + limit).clamp(0, allProducts.length);
         
@@ -101,7 +101,7 @@ class ApiService {
             ? allProducts.sublist(startIndex, endIndex)
             : <Product>[];
             
-        AppLogger.success('${products.length} produtos carregados (offset: $offset, limit: $limit)', LogTags.api);
+        AppLogger.success('${products.length} products loaded (offset: $offset, limit: $limit)', LogTags.api);
         return products;
       } else {
         throw ApiException('Error loading products: ${response.statusCode}');
@@ -113,7 +113,7 @@ class ApiService {
     }
   }
   
-  /// Carrega todos os produtos (para uso interno)
+  /// Loads all products (for internal use)
   Future<List<Product>> getAllProducts() async {
     try {
       final response = await _dio.get(AppConstants.productsEndpoint);
@@ -121,10 +121,10 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         final products = data.map((json) => Product.fromJson(json)).toList();
-        AppLogger.success('${products.length} produtos carregados com sucesso', LogTags.api);
+        AppLogger.success('${products.length} products loaded successfully', LogTags.api);
         return products;
       } else {
-        throw ApiException('Erro ao carregar produtos: ${response.statusCode}');
+        throw ApiException('Error loading products: ${response.statusCode}');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -139,10 +139,10 @@ class ApiService {
       
       if (response.statusCode == 200) {
         final product = Product.fromJson(response.data);
-        AppLogger.success('Produto ${product.title} carregado com sucesso', LogTags.api);
+        AppLogger.success('Product ${product.title} loaded successfully', LogTags.api);
         return product;
       } else {
-        throw ApiException('Produto não encontrado');
+        throw ApiException('Product not found');
       }
     } on DioException catch (e) {
       throw _handleDioError(e);
@@ -158,7 +158,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         final products = data.map((json) => Product.fromJson(json)).toList();
-        AppLogger.success('${products.length} produtos da categoria "$category" carregados', LogTags.api);
+        AppLogger.success('${products.length} products from category "$category" loaded', LogTags.api);
         return products;
       } else {
         throw ApiException('Error loading products from category');
@@ -177,7 +177,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final List<dynamic> data = response.data;
         final categories = data.cast<String>();
-        AppLogger.success('${categories.length} categorias carregadas: ${categories.join(", ")}', LogTags.api);
+        AppLogger.success('${categories.length} categories loaded: ${categories.join(", ")}', LogTags.api);
         return categories;
       } else {
         throw ApiException('Error loading categories');
@@ -189,7 +189,7 @@ class ApiService {
     }
   }
   
-  /// Trata erros do Dio
+  /// Handles Dio errors
   ApiException _handleDioError(DioException e) {
     switch (e.type) {
       case DioExceptionType.badResponse:
@@ -200,11 +200,11 @@ class ApiService {
       case DioExceptionType.cancel:
         return ApiException('Request cancelled');
       case DioExceptionType.connectionTimeout:
-        return ApiException('Tempo limite de conexão excedido');
+        return ApiException('Connection timeout exceeded');
       case DioExceptionType.receiveTimeout:
-        return ApiException('Tempo limite de recebimento excedido');
+        return ApiException('Receive timeout exceeded');
       case DioExceptionType.sendTimeout:
-        return ApiException('Tempo limite de envio excedido');
+        return ApiException('Send timeout exceeded');
       case DioExceptionType.unknown:
       default:
         return ApiException(AppConstants.genericError);
