@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const Color primaryColor = Color(0xFF2196F3);
+  static const Color primaryColor = Color(0xff37474fa6);
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color surfaceColor = Colors.white;
   static const Color errorColor = Color(0xFFB00020);
@@ -19,7 +19,7 @@ class AppTheme {
         seedColor: primaryColor,
         brightness: Brightness.light,
       ),
-      scaffoldBackgroundColor: backgroundColor,
+      scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBarTheme: const AppBarTheme(
         backgroundColor: Colors.white,
         foregroundColor: textPrimary,

@@ -7,6 +7,7 @@ import '../../widgets/product_list_widget.dart';
 import '../../widgets/favorites_badge_widget.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
+import '../error/error_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isInitializing = true;
-  bool _hasConnectionError = false;
 
   @override
   void initState() {
@@ -35,20 +35,19 @@ class _HomeScreenState extends State<HomeScreen> {
       await _productProvider.ensureInitialized();
       
       await _productProvider.initializeWithApi().catchError((error) {
-        // Se falhar por conexão, mostra imagem de erro
         debugPrint('Failed to load API data: $error');
         if (mounted) {
-          setState(() {
-            _hasConnectionError = true;
-          });
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const ErrorScreen()),
+          );
         }
       });
     } catch (e) {
       debugPrint('Error during app initialization: $e');
       if (mounted) {
-        setState(() {
-          _hasConnectionError = true;
-        });
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const ErrorScreen()),
+        );
       }
     } finally {
       if (mounted) {
@@ -102,13 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _productProvider.clearFilters();
   }
 
-  Future<void> _retryConnection() async {
-    setState(() {
-      _hasConnectionError = false;
-      _isInitializing = true;
-    });
-    await _initializeApp();
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,53 +142,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               )
-            : _hasConnectionError
-                 ? Center(
-                     child: GestureDetector(
-                       onTap: _retryConnection,
-                       child: Image.asset(
-                         'assets/images/erro.png',
-                         width: 120,
-                         height: 120,
-                         fit: BoxFit.contain,
-                         errorBuilder: (context, error, stackTrace) {
-                           return const Icon(
-                             Icons.wifi_off,
-                             size: 64,
-                             color: Colors.red,
-                           );
-                         },
-                       ),
-                     ),
-                   )
-                : ValueListenableBuilder(
-                    valueListenable: _productProvider,
-                    builder: (context, state, child) {
-                      return RefreshIndicator(
-                        onRefresh: _productProvider.refresh,
-                        child: Column(
-                          children: [
-                            SearchBarWidget(
-                              controller: _searchController,
-                              isSearching: state.isSearching,
-                              onClear: _clearFilters,
-                            ),
-                            Expanded(
-                              child: ProductListWidget(
-                                state: state,
-                                scrollController: _scrollController,
-                                onProductTap: _navigateToProductDetail,
-                                onFavoriteToggle: _productProvider.toggleFavorite,
-                                isFavorite: _productProvider.isFavorite,
-                                onRefresh: _productProvider.refresh,
-                                onClearSearch: _clearFilters,
-                              ),
-                            ),
-                          ],
+            : ValueListenableBuilder(
+                valueListenable: _productProvider,
+                builder: (context, state, child) {
+                  return RefreshIndicator(
+                    onRefresh: _productProvider.refresh,
+                    child: Column(
+                      children: [
+                        SearchBarWidget(
+                          controller: _searchController,
+                          isSearching: state.isSearching,
+                          onClear: _clearFilters,
                         ),
-                      );
-                    },
-                  ),
+                        Expanded(
+                          child: ProductListWidget(
+                            state: state,
+                            scrollController: _scrollController,
+                            onProductTap: _navigateToProductDetail,
+                            onFavoriteToggle: _productProvider.toggleFavorite,
+                            isFavorite: _productProvider.isFavorite,
+                            onRefresh: _productProvider.refresh,
+                            onClearSearch: _clearFilters,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
       ),
     );
   }

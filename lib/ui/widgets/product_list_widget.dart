@@ -41,10 +41,9 @@ class ProductListWidget extends StatelessWidget {
 
     // Nenhum produto encontrado
     if (!state.hasProducts) {
-      return const EmptyWidget(
-        message: 'No products found',
-        subtitle: 'Try again later',
-        icon: Icons.shopping_bag_outlined,
+      return CustomErrorWidget(
+        message: state.error!,
+        onRetry: onRefresh,
       );
     }
 
@@ -56,11 +55,6 @@ class ProductListWidget extends StatelessWidget {
           onClearSearch: onClearSearch,
         );
       }
-      return const EmptyWidget(
-        message: 'No products in this category',
-        icon: Icons.category_outlined,
-        useErrorImageOnly: true,
-      );
     }
 
     // Lista de produtos

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../../data/models/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../widgets/product_card.dart';
@@ -35,9 +36,17 @@ class FavoritesScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Favorites'),
         centerTitle: false,
         titleSpacing: 0,
+        title: Text(
+          'Favorites',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w600,
+            fontSize: 20,
+            height: 1.0,
+            letterSpacing: 0,
+          ),
+        ),
       ),
       body: ValueListenableBuilder(
         valueListenable: productProvider,
