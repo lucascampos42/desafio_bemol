@@ -56,7 +56,7 @@ class ProductDetailScreen extends StatelessWidget {
             Container(
               height: MediaQuery.of(context).size.height * 0.4,
               width: double.infinity,
-              margin: const EdgeInsets.only(top: 9.54),
+              margin: const EdgeInsets.symmetric(vertical: 10),
               child: ClipRRect(
                 child: CachedNetworkImage(
                   imageUrl: product.image,
@@ -104,10 +104,6 @@ class ProductDetailScreen extends StatelessWidget {
                   
                   // Descrição
                   _buildDescription(context),
-                  const SizedBox(height: AppConstants.largePadding),
-                  
-                  // Botão de ação
-                  _buildActionButton(context),
                 ],
               ),
             ),
@@ -142,7 +138,7 @@ class ProductDetailScreen extends StatelessWidget {
 
   Widget _buildRatingAndPrice(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -156,9 +152,10 @@ class ProductDetailScreen extends StatelessWidget {
                   size: 24,
                 ),
                 const SizedBox(width: 6),
-                                Text(
+                  Text(
                   Helpers.formatRating(product.rating.rate),
                   style: GoogleFonts.poppins(
+                    color: AppTheme.textSecondary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     height: 1.21,
@@ -169,7 +166,7 @@ class ProductDetailScreen extends StatelessWidget {
                 Text(
                   '(${product.rating.count} reviews)',
                   style: GoogleFonts.poppins(
-                    color: Colors.grey[600],
+                    color: AppTheme.textSecondary,
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     height: 1.21,
@@ -184,13 +181,14 @@ class ProductDetailScreen extends StatelessWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              const SizedBox(height: 2),
               Text(
                 Helpers.formatPrice(product.price),
-                style:  TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF5EC401),
+                style: GoogleFonts.poppins(
+                  fontSize: 29,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF5EC401),
+                  height: 1.0,
+                  letterSpacing: 0.0,
                 ),
               ),
             ],
@@ -206,104 +204,51 @@ class ProductDetailScreen extends StatelessWidget {
       children: [
         // Categoria
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 8,
-          ),
-          decoration: BoxDecoration(
-            color: AppTheme.primaryColor.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: AppTheme.primaryColor.withOpacity(0.3),
-              width: 1,
-            ),
-          ),
-          child: Text(
-            product.category.toUpperCase(),
-            style: const TextStyle(
-              color: AppTheme.primaryColor,
-              fontWeight: FontWeight.w600,
-              fontSize: 12,
-              letterSpacing: 0.5,
-            ),
-          ),
-        ),
-        const SizedBox(height: AppConstants.smallPadding),
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(AppConstants.defaultPadding),
-          decoration: BoxDecoration(
-            color: Colors.grey[50],
-            borderRadius: BorderRadius.circular(AppConstants.borderRadius),
-            border: Border.all(
-              color: Colors.grey[200]!,
-              width: 1,
-            ),
-          ),
-          child: Text(
-            product.description,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: AppTheme.textPrimary,
-              height: 1.5,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionButton(BuildContext context) {
-    return ValueListenableBuilder(
-      valueListenable: productProvider,
-      builder: (context, state, child) {
-        final isFavorite = productProvider.isFavorite(product.id);
-        
-        return Container(
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            gradient: LinearGradient(
-              colors: isFavorite 
-                ? [Colors.red[400]!, Colors.red[600]!]
-                : [AppTheme.primaryColor, AppTheme.primaryColor.withOpacity(0.8)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: (isFavorite ? Colors.red : AppTheme.primaryColor).withOpacity(0.3),
-                spreadRadius: 1,
-                blurRadius: 8,
-                offset: const Offset(0, 4),
+          child: Row(
+            children: [
+              Image.asset(
+                'assets/images/category.png',
+                width: 24,
+                height: 24,
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  Helpers.capitalize(product.category),
+                  style: const TextStyle(
+                    color: AppTheme.textPrimary,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    letterSpacing: 0.5,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
-          child: ElevatedButton.icon(
-            onPressed: () => productProvider.toggleFavorite(product),
-            icon: Icon(
-              isFavorite ? Icons.favorite_rounded : Icons.favorite_border_rounded,
-              color: Colors.white,
-              size: 24,
+        ),
+        const SizedBox(height: 28),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Image.asset(
+              'assets/images/descricion.png',
+              width: 24,
+              height: 24,
             ),
-            label: Text(
-              isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                product.description,
+                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                  color: AppTheme.textPrimary,
+                  height: 1.5,
+                ),
               ),
             ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
-          ),
-        );
-      },
+          ],
+        ),
+      ],
     );
   }
 }
