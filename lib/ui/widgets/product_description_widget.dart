@@ -49,6 +49,7 @@ class ProductDescriptionWidget extends StatelessWidget {
             Expanded(
               child: Text(
                 description,
+                key: const Key('product_detail_description'),
                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: AppTheme.textPrimary,
                   height: 1.5,

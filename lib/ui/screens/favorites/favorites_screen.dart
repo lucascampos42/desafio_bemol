@@ -61,6 +61,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const Key('favorites_screen'),
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: false,
@@ -136,6 +137,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         return AnimatedListItem(
           index: index,
           child: ProductCard(
+            key: Key('favorite_product_${product.id}'),
             product: product,
             isFavorite: true,
             onTap: () => _navigateToProductDetail(context, product),
@@ -161,6 +163,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         return AnimatedListItem(
           index: index,
           child: ProductCard(
+            key: Key('favorite_product_${product.id}'),
             product: product,
             isFavorite: true,
             onTap: () => _navigateToProductDetail(context, product),

@@ -9,6 +9,7 @@ class ProductImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      key: const Key('product_detail_image'),
       height: MediaQuery.of(context).size.height * 0.4,
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 9.54),

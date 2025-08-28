@@ -73,6 +73,7 @@ class _ProductCardState extends State<ProductCard>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
+              key: Key('product_card_${widget.product.id}'),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -189,6 +190,7 @@ class _ProductCardState extends State<ProductCard>
                                       shape: BoxShape.circle,
                                     ),
                                     child: IconButton(
+                                      key: Key('favorite_button_${widget.product.id}'),
                                       onPressed: widget.onFavoriteToggle,
                                       icon: AppAnimations.favoriteHeart(
                                         isFavorite: widget.isFavorite,

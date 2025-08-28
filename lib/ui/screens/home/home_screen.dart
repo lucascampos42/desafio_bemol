@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../data/models/product.dart';
 import '../../../providers/product_provider.dart';
 import '../../widgets/search_bar_widget.dart';
-import '../../widgets/product_list_widget.dart';
 import '../../widgets/responsive_product_list_widget.dart';
 import '../../widgets/favorites_badge_widget.dart';
 import '../../widgets/category_error_widget.dart';
@@ -11,7 +10,6 @@ import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
 import '../../../core/utils/animations.dart';
 import '../../../core/utils/performance_metrics.dart';
-import '../../../core/utils/responsive_helper.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -130,6 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const Key('home_screen'),
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(

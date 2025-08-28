@@ -84,6 +84,7 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
           return Transform.scale(
             scale: _scaleAnimation.value,
             child: Container(
+              key: Key('product_card_${widget.product.id}'),
               decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
@@ -299,10 +300,14 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
             ),
           ),
         ),
-        AppAnimations.favoriteHeart(
-          isFavorite: widget.isFavorite,
+        GestureDetector(
+          key: Key('favorite_button_${widget.product.id}'),
           onTap: widget.onFavoriteToggle,
-          size: isDesktop ? 28 : 24,
+          child: AppAnimations.favoriteHeart(
+            isFavorite: widget.isFavorite,
+            onTap: widget.onFavoriteToggle,
+            size: isDesktop ? 28 : 24,
+          ),
         ),
       ],
     );

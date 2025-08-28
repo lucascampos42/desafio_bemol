@@ -14,6 +14,7 @@ class FavoritesBadgeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
+      key: const Key('favorites_navigation_button'),
       onPressed: onTap,
       icon: AppAnimations.favoriteHeart(
         isFavorite: hasFavorites,

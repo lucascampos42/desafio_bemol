@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_theme.dart';
 import '../../core/utils/app_constants.dart';
 import '../../core/utils/responsive_helper.dart';
 
@@ -58,6 +57,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
             ],
           ),
           child: TextField(
+            key: const Key('search_field'),
             controller: widget.controller,
             focusNode: _focusNode,
             style: TextStyle(

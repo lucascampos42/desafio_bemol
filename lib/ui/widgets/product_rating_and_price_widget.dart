@@ -58,6 +58,7 @@ class ProductRatingAndPriceWidget extends StatelessWidget {
             children: [
               Text(
                 Helpers.formatPrice(price),
+                key: const Key('product_detail_price'),
                 style: GoogleFonts.poppins(
                   fontSize: 29,
                   fontWeight: FontWeight.w600,

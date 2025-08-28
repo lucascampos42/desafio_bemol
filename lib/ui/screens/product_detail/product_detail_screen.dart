@@ -41,6 +41,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const Key('product_detail_screen'),
       appBar: AppBar(
         centerTitle: false,
         titleSpacing: 0,

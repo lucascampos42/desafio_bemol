@@ -13,6 +13,7 @@ class ProductTitleAndCategoryWidget extends StatelessWidget {
       children: [
         Text(
           title,
+          key: const Key('product_detail_title'),
           style: GoogleFonts.poppins(
             fontSize: 20,
             fontWeight: FontWeight.w500,
