@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:desafio_bemol/main.dart' as app;
 import 'package:desafio_bemol/data/models/product.dart';
 import 'package:desafio_bemol/providers/product_provider.dart';
+
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   group('App Integration Tests', () {
-    group('Fluxo Principal de Navegação', () {
-      testWidgets('deve navegar da home para detalhes do produto e voltar', (
-        tester,
-      ) async {
+    group('Main Navigation Flow', () {
+    testWidgets('should navigate from home to product details and back', (
+      tester,
+    ) async {
         app.main();
         await tester.pumpAndSettle();
         await tester.pumpAndSettle(const Duration(seconds: 3));
-        expect(find.byType(GridView), findsOneWidget);
+        expect(find.byType(ListView), findsOneWidget);
         final firstProduct = find.byKey(const Key('product_card_0')).first;
         await tester.tap(firstProduct);
         await tester.pumpAndSettle();
@@ -39,7 +40,7 @@ void main() {
         expect(find.byType(GridView), findsOneWidget);
       });
 
-      testWidgets('deve navegar para tela de favoritos e voltar', (
+      testWidgets('should navigate to favorites screen and back', (
         tester,
       ) async {
         // Arrange
@@ -64,9 +65,9 @@ void main() {
       });
     });
 
-    group('Fluxo de Favoritos', () {
+    group('Favorites Flow', () {
       testWidgets(
-        'deve adicionar produto aos favoritos e visualizar na tela de favoritos',
+        'should add product to favorites and view in favorites screen',
         (tester) async {
           // Arrange
           app.main();
@@ -91,7 +92,7 @@ void main() {
         },
       );
 
-      testWidgets('deve remover produto dos favoritos', (tester) async {
+      testWidgets('should remove product from favorites', (tester) async {
         // Arrange
         app.main();
         await tester.pumpAndSettle();
@@ -118,7 +119,7 @@ void main() {
         expect(find.byKey(const Key('favorite_product_0')), findsNothing);
       });
 
-      testWidgets('deve persistir favoritos após reiniciar app', (
+      testWidgets('should persist favorites after app restart', (
         tester,
       ) async {
         // Arrange
@@ -151,8 +152,8 @@ void main() {
       });
     });
 
-    group('Fluxo de Busca', () {
-      testWidgets('deve buscar produtos em tempo real', (tester) async {
+    group('Search Flow', () {
+      testWidgets('should search products in real time', (tester) async {
         // Arrange
         app.main();
         await tester.pumpAndSettle();
@@ -171,14 +172,14 @@ void main() {
         ); // Aguardar debounce
 
         // Assert - Verificar se resultados foram filtrados
-        expect(find.byType(GridView), findsOneWidget);
+        expect(find.byType(ListView), findsOneWidget);
 
         // Verificar se apenas produtos da categoria electronics são mostrados
         final productCards = find.byType(Card);
         expect(productCards, findsWidgets);
       });
 
-      testWidgets('deve limpar busca e mostrar todos os produtos', (
+      testWidgets('should clear search and show all products', (
         tester,
       ) async {
         // Arrange
@@ -199,12 +200,12 @@ void main() {
         await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
         // Assert - Verificar se todos os produtos são mostrados novamente
-        expect(find.byType(GridView), findsOneWidget);
+        expect(find.byType(ListView), findsOneWidget);
         final productCards = find.byType(Card);
         expect(productCards, findsWidgets);
       });
 
-      testWidgets('deve mostrar mensagem quando nenhum produto é encontrado', (
+      testWidgets('should show message when no product is found', (
         tester,
       ) async {
         // Arrange
@@ -219,13 +220,13 @@ void main() {
         await tester.pumpAndSettle(const Duration(milliseconds: 500));
 
         // Assert - Verificar mensagem de nenhum resultado
-        expect(find.text('Nenhum produto encontrado'), findsOneWidget);
-        expect(find.byType(GridView), findsNothing);
+        expect(find.text('No products found'), findsOneWidget);
+        expect(find.byType(ListView), findsNothing);
       });
     });
 
-    group('Fluxo de Categorias', () {
-      testWidgets('deve filtrar produtos por categoria', (tester) async {
+    group('Categories Flow', () {
+      testWidgets('should filter products by category', (tester) async {
         // Arrange
         app.main();
         await tester.pumpAndSettle();
@@ -239,14 +240,14 @@ void main() {
         await tester.pumpAndSettle();
 
         // Assert - Verificar se produtos foram filtrados
-        expect(find.byType(GridView), findsOneWidget);
+        expect(find.byType(ListView), findsOneWidget);
 
         // Verificar se chip está selecionado
         final selectedChip = tester.widget<FilterChip>(categoryChip);
         expect(selectedChip.selected, isTrue);
       });
 
-      testWidgets('deve remover filtro de categoria', (tester) async {
+      testWidgets('should remove category filter', (tester) async {
         app.main();
         await tester.pumpAndSettle();
         await tester.pumpAndSettle(const Duration(seconds: 3));
@@ -263,12 +264,12 @@ void main() {
         final unselectedChip = tester.widget<FilterChip>(categoryChip);
         expect(unselectedChip.selected, isFalse);
 
-        expect(find.byType(GridView), findsOneWidget);
+        expect(find.byType(ListView), findsOneWidget);
       });
     });
 
-    group('Fluxo de Scroll Infinito', () {
-      testWidgets('deve carregar mais produtos ao fazer scroll', (
+    group('Infinite Scroll Flow', () {
+      testWidgets('should load more products when scrolling', (
         tester,
       ) async {
         app.main();
@@ -277,8 +278,8 @@ void main() {
 
         final initialProductCount = find.byType(Card).evaluate().length;
 
-        final gridView = find.byType(GridView);
-        await tester.drag(gridView, const Offset(0, -1000));
+        final listView = find.byType(ListView);
+        await tester.drag(listView, const Offset(0, -1000));
         await tester.pumpAndSettle();
         await tester.pumpAndSettle(
           const Duration(seconds: 2),
@@ -289,14 +290,14 @@ void main() {
       });
 
       testWidgets(
-        'deve mostrar indicador de carregamento durante scroll infinito',
+        'should show loading indicator during infinite scroll',
         (tester) async {
           app.main();
           await tester.pumpAndSettle();
           await tester.pumpAndSettle(const Duration(seconds: 3));
 
-          final gridView = find.byType(GridView);
-          await tester.drag(gridView, const Offset(0, -1000));
+          final listView = find.byType(ListView);
+          await tester.drag(listView, const Offset(0, -1000));
           await tester.pump();
 
           expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -304,8 +305,8 @@ void main() {
       );
     });
 
-    group('Tratamento de Erros', () {
-      testWidgets('deve mostrar erro quando falha ao carregar produtos', (
+    group('Error Handling', () {
+      testWidgets('should show error when fails to load products', (
         tester,
       ) async {
         app.main();
@@ -322,7 +323,7 @@ void main() {
     });
 
     group('Performance', () {
-      testWidgets('deve manter performance com muitos produtos', (
+      testWidgets('should maintain performance with many products', (
         tester,
       ) async {
         // Arrange
@@ -334,7 +335,7 @@ void main() {
         final stopwatch = Stopwatch()..start();
 
         for (int i = 0; i < 5; i++) {
-          await tester.drag(find.byType(GridView), const Offset(0, -500));
+          await tester.drag(find.byType(ListView), const Offset(0, -500));
           await tester.pump();
         }
 
@@ -342,7 +343,7 @@ void main() {
 
         // Assert - Verificar se performance é aceitável
         expect(stopwatch.elapsedMilliseconds, lessThan(2000));
-        expect(find.byType(GridView), findsOneWidget);
+        expect(find.byType(ListView), findsOneWidget);
       });
     });
   });
