@@ -64,7 +64,49 @@ class ApiService {
     ));
   }
   
-  Future<List<Product>> getProducts() async {
+  /// Carrega produtos com suporte a paginação
+  /// 
+  /// [limit] - Número máximo de produtos a retornar (padrão: 20)
+  /// [offset] - Número de produtos a pular (para paginação)
+  Future<List<Product>> getProducts({int limit = 20, int offset = 0}) async {
+    try {
+      final queryParams = {
+        'limit': limit.toString(),
+      };
+      
+      // A fakestoreapi.com suporta apenas limit, não offset
+      // Para simular paginação, vamos usar limit e depois filtrar no cliente
+      final response = await _dio.get(
+        AppConstants.productsEndpoint,
+        queryParameters: queryParams,
+      );
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        final allProducts = data.map((json) => Product.fromJson(json)).toList();
+        
+        // Simula paginação no cliente já que a API não suporta offset
+        final startIndex = offset;
+        final endIndex = (startIndex + limit).clamp(0, allProducts.length);
+        
+        final products = startIndex < allProducts.length 
+            ? allProducts.sublist(startIndex, endIndex)
+            : <Product>[];
+            
+        AppLogger.success('${products.length} produtos carregados (offset: $offset, limit: $limit)', LogTags.api);
+        return products;
+      } else {
+        throw ApiException('Erro ao carregar produtos: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Unexpected error: $e');
+    }
+  }
+  
+  /// Carrega todos os produtos (para uso interno)
+  Future<List<Product>> getAllProducts() async {
     try {
       final response = await _dio.get(AppConstants.productsEndpoint);
       

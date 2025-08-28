@@ -7,6 +7,10 @@ class ProductState {
   final Set<int> favoriteIds;
   final bool isLoading;
   final bool isLoadingFavorites;
+  final bool isLoadingMore;
+  final bool hasMoreProducts;
+  final int currentPage;
+  final int pageSize;
   final String? error;
   final String? categoriesError;
   final String searchQuery;
@@ -20,6 +24,10 @@ class ProductState {
     required this.favoriteIds,
     required this.isLoading,
     required this.isLoadingFavorites,
+    required this.isLoadingMore,
+    required this.hasMoreProducts,
+    required this.currentPage,
+    required this.pageSize,
     this.error,
     this.categoriesError,
     required this.searchQuery,
@@ -36,6 +44,10 @@ class ProductState {
       favoriteIds: {},
       isLoading: false,
       isLoadingFavorites: false,
+      isLoadingMore: false,
+      hasMoreProducts: true,
+      currentPage: 0,
+      pageSize: 10,
       error: null,
       categoriesError: null,
       searchQuery: '',
@@ -52,6 +64,10 @@ class ProductState {
     Set<int>? favoriteIds,
     bool? isLoading,
     bool? isLoadingFavorites,
+    bool? isLoadingMore,
+    bool? hasMoreProducts,
+    int? currentPage,
+    int? pageSize,
     String? error,
     bool clearError = false,
     String? categoriesError,
@@ -68,6 +84,10 @@ class ProductState {
       favoriteIds: favoriteIds ?? this.favoriteIds,
       isLoading: isLoading ?? this.isLoading,
       isLoadingFavorites: isLoadingFavorites ?? this.isLoadingFavorites,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      hasMoreProducts: hasMoreProducts ?? this.hasMoreProducts,
+      currentPage: currentPage ?? this.currentPage,
+      pageSize: pageSize ?? this.pageSize,
       error: clearError ? null : (error ?? this.error),
       categoriesError: clearCategoriesError ? null : (categoriesError ?? this.categoriesError),
       searchQuery: searchQuery ?? this.searchQuery,
@@ -104,6 +124,10 @@ class ProductState {
         other.favoriteIds == favoriteIds &&
         other.isLoading == isLoading &&
         other.isLoadingFavorites == isLoadingFavorites &&
+        other.isLoadingMore == isLoadingMore &&
+        other.hasMoreProducts == hasMoreProducts &&
+        other.currentPage == currentPage &&
+        other.pageSize == pageSize &&
         other.error == error &&
         other.categoriesError == categoriesError &&
         other.searchQuery == searchQuery &&
@@ -120,6 +144,10 @@ class ProductState {
       favoriteIds,
       isLoading,
       isLoadingFavorites,
+      isLoadingMore,
+      hasMoreProducts,
+      currentPage,
+      pageSize,
       error,
       categoriesError,
       searchQuery,
@@ -130,6 +158,6 @@ class ProductState {
 
   @override
   String toString() {
-    return 'ProductState(products: ${products.length}, filteredProducts: ${filteredProducts.length}, favorites: ${favorites.length}, isLoading: $isLoading, error: $error, searchQuery: $searchQuery, selectedCategory: $selectedCategory)';
+    return 'ProductState(products: ${products.length}, filteredProducts: ${filteredProducts.length}, favorites: ${favorites.length}, isLoading: $isLoading, isLoadingMore: $isLoadingMore, hasMoreProducts: $hasMoreProducts, currentPage: $currentPage, error: $error, searchQuery: $searchQuery, selectedCategory: $selectedCategory)';
   }
 }

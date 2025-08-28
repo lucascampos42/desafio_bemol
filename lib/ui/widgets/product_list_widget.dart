@@ -61,8 +61,18 @@ class ProductListWidget extends StatelessWidget {
     return ListView.builder(
       controller: scrollController,
       padding: EdgeInsets.zero,
-      itemCount: state.filteredProducts.length,
+      itemCount: state.filteredProducts.length + (state.isLoadingMore ? 1 : 0),
       itemBuilder: (context, index) {
+        // Indicador de carregamento no final da lista
+        if (index == state.filteredProducts.length) {
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        
         final product = state.filteredProducts[index];
         return ProductCard(
           product: product,

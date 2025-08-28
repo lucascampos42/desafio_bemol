@@ -10,7 +10,6 @@ import '../../widgets/enhanced_error_widget.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
-import '../../../core/utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _productProvider = ProductProvider();
     _searchController.addListener(_onSearchChanged);
+    _scrollController.addListener(_onScrollChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _initializeApp();
     });
@@ -60,6 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _searchController.removeListener(_onSearchChanged);
+    _scrollController.removeListener(_onScrollChanged);
     _searchController.dispose();
     _scrollController.dispose();
     _productProvider.dispose();
@@ -68,6 +69,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onSearchChanged() {
     _productProvider.searchProducts(_searchController.text);
+  }
+
+  void _onScrollChanged() {
+    if (_productProvider.shouldLoadMore(_scrollController)) {
+      _productProvider.loadMoreProducts(context);
+    }
   }
 
   void _navigateToProductDetail(Product product) {
