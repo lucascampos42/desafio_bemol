@@ -105,6 +105,68 @@ integration_test/                # Testes de integração
    flutter build apk --release
    ```
 
+### Comandos para Executar o Projeto
+
+#### 🖥️ Desktop (Windows)
+```bash
+# Executar em modo debug
+flutter run -d windows
+
+# Build para produção
+flutter build windows
+```
+
+#### 🌐 Navegador Web
+```bash
+# Executar no Chrome (modo debug)
+flutter run -d chrome
+
+# Executar no Edge
+flutter run -d edge
+
+# Executar em servidor web local
+flutter run -d web-server --web-port=8080
+
+# Build para produção web
+flutter build web
+
+# Build web otimizado com WASM (experimental)
+flutter build web --wasm
+```
+
+#### 📱 Mobile
+```bash
+# Android
+flutter run -d android
+
+# iOS (apenas no macOS)
+flutter run -d ios
+
+# Build Android APK
+flutter build apk --release
+
+# Build Android App Bundle
+flutter build appbundle --release
+```
+
+#### 🔧 Comandos de Desenvolvimento
+```bash
+# Verificar dispositivos disponíveis
+flutter devices
+
+# Executar com hot reload ativo
+flutter run --hot
+
+# Executar em modo profile (para análise de performance)
+flutter run --profile
+
+# Executar em modo release
+flutter run --release
+
+# Limpar cache e rebuild
+flutter clean && flutter pub get && flutter run
+```
+
 ---
 
 ## 🧪 Testes Detalhados
