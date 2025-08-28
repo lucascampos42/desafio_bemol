@@ -7,7 +7,7 @@ import '../../widgets/state_widgets.dart';
 import '../error/error_screen.dart';
 import '../product_detail/product_detail_screen.dart';
 
-class FavoritesScreen extends StatelessWidget {
+class FavoritesScreen extends StatefulWidget {
   final ProductProvider productProvider;
 
   const FavoritesScreen({
@@ -15,13 +15,24 @@ class FavoritesScreen extends StatelessWidget {
     required this.productProvider,
   });
 
+  @override
+  State<FavoritesScreen> createState() => _FavoritesScreenState();
+}
+
+class _FavoritesScreenState extends State<FavoritesScreen> {
+  @override
+  void initState() {
+    super.initState();
+    widget.productProvider.loadFavoritesOnly();
+  }
+
   void _navigateToProductDetail(BuildContext context, Product product) {
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ProductDetailScreen(
           product: product,
-          productProvider: productProvider,
+          productProvider: widget.productProvider,
         ),
       ),
     );
@@ -29,11 +40,6 @@ class FavoritesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      productProvider.clearError();
-      productProvider.loadFavoritesOnly();
-    });
-    
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -50,7 +56,7 @@ class FavoritesScreen extends StatelessWidget {
         ),
       ),
       body: ValueListenableBuilder(
-        valueListenable: productProvider,
+        valueListenable: widget.productProvider,
         builder: (context, state, child) {
           if (state.isLoadingFavorites) {
             return const LoadingWidget(message: 'Loading favorites...');
@@ -84,7 +90,7 @@ class FavoritesScreen extends StatelessWidget {
           }
 
           return RefreshIndicator(
-            onRefresh: productProvider.loadFavoritesOnly,
+            onRefresh: widget.productProvider.loadFavoritesOnly,
             child: _buildFavoritesList(context, state),
           );
         },
@@ -92,7 +98,7 @@ class FavoritesScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoritesList(BuildContext context, state) {
+  Widget _buildFavoritesList(BuildContext context, dynamic state) {
     return ListView.builder(
       padding: EdgeInsets.zero,
       itemCount: state.favorites.length,
@@ -102,7 +108,7 @@ class FavoritesScreen extends StatelessWidget {
           product: product,
           isFavorite: true,
           onTap: () => _navigateToProductDetail(context, product),
-          onFavoriteToggle: () => productProvider.toggleFavorite(product),
+          onFavoriteToggle: () => widget.productProvider.toggleFavorite(product),
         );
       },
     );

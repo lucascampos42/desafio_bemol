@@ -34,14 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await _productProvider.ensureInitialized();
       
-      await _productProvider.initializeWithApi().catchError((error) {
-        debugPrint('Failed to load API data: $error');
-        if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const ErrorScreen()),
-          );
-        }
-      });
+      await _productProvider.initializeWithApi();
     } catch (e) {
       debugPrint('Error during app initialization: $e');
       if (mounted) {
@@ -84,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToFavorites() {
+    _productProvider.clearError();
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -91,7 +85,11 @@ class _HomeScreenState extends State<HomeScreen> {
           productProvider: _productProvider,
         ),
       ),
-    );
+    ).then((_) {
+      if (mounted) {
+        _productProvider.refresh();
+      }
+    });
   }
 
 
@@ -145,6 +143,16 @@ class _HomeScreenState extends State<HomeScreen> {
             : ValueListenableBuilder(
                 valueListenable: _productProvider,
                 builder: (context, state, child) {
+                  if (state.hasError && !state.hasProducts) {
+                    return Center(
+                      child: Image.asset(
+                        'assets/images/empty.png',
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.contain,
+                      ),
+                    );
+                  }
                   return RefreshIndicator(
                     onRefresh: _productProvider.refresh,
                     child: Column(

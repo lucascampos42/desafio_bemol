@@ -41,6 +41,9 @@ class ApiService {
         requestBody: true,
         responseBody: true,
         logPrint: (obj) => debugPrint(obj.toString()),
+        error: true,
+        requestHeader: true,
+        responseHeader: true,
       ));
     }
 

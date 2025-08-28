@@ -112,7 +112,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
 
   /// Carrega favoritos sem verificar conexão (para tela de favoritos)
   Future<void> loadFavoritesOnly() async {
-    value = value.copyWith(isLoadingFavorites: true, clearError: true);
+    value = value.copyWith(isLoadingFavorites: true);
     
     try {
       _localStorage ??= await LocalStorage.getInstance();
