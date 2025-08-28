@@ -10,6 +10,7 @@ import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
 import '../../../core/utils/animations.dart';
+import '../../../core/utils/performance_metrics.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -78,6 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToProductDetail(Product product) {
+    PerformanceMetrics.instance.trackScreenNavigation(
+      'home_to_product_detail',
+      {'product_id': product.id.toString()},
+    );
+    
     Navigator.push(
       context,
       AppAnimations.createRoute(
@@ -90,6 +96,11 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _navigateToFavorites() {
+    PerformanceMetrics.instance.trackScreenNavigation(
+      'home_to_favorites',
+      {'favorites_count': _productProvider.value.favorites.length.toString()},
+    );
+    
     _productProvider.clearError();
     Navigator.push(
       context,

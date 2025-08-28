@@ -3,6 +3,7 @@ import '../../data/models/product.dart';
 import '../../providers/product_state.dart';
 import 'state_widgets.dart';
 import 'product_card.dart';
+import '../../core/utils/animations.dart';
 
 class ProductListWidget extends StatelessWidget {
   final ProductState state;
@@ -65,20 +66,25 @@ class ProductListWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         // Indicador de carregamento no final da lista
         if (index == state.filteredProducts.length) {
-          return const Padding(
-            padding: EdgeInsets.all(16.0),
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Center(
-              child: CircularProgressIndicator(),
+              child: AppAnimations.rotatingLoader(
+                size: 32,
+              ),
             ),
           );
         }
         
         final product = state.filteredProducts[index];
-        return ProductCard(
-          product: product,
-          isFavorite: isFavorite(product.id),
-          onTap: () => onProductTap(product),
-          onFavoriteToggle: () => onFavoriteToggle(product, context),
+        return AnimatedListItem(
+          index: index,
+          child: ProductCard(
+            product: product,
+            isFavorite: isFavorite(product.id),
+            onTap: () => onProductTap(product),
+            onFavoriteToggle: () => onFavoriteToggle(product, context),
+          ),
         );
       },
     );

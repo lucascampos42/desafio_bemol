@@ -10,6 +10,7 @@ import '../core/utils/toast_helper.dart';
 import '../core/utils/error_handler.dart';
 import '../core/utils/product_filter.dart';
 import '../core/managers/favorites_manager.dart';
+import '../core/utils/performance_metrics.dart';
 import 'product_state.dart';
 
 class ProductProvider extends ValueNotifier<ProductState> {
@@ -116,10 +117,15 @@ class ProductProvider extends ValueNotifier<ProductState> {
     );
     
     try {
-      final products = await _apiService.getProducts(
-        limit: value.pageSize,
-        offset: 0,
+      final products = await PerformanceMetrics.instance.measureAsync(
+        'load_products',
+        () => _apiService.getProducts(
+          limit: value.pageSize,
+          offset: 0,
+        ),
       );
+      
+      PerformanceMetrics.instance.trackApiCall('products');
       
       value = value.copyWith(
         products: products,
@@ -154,10 +160,15 @@ class ProductProvider extends ValueNotifier<ProductState> {
     
     try {
       final offset = value.currentPage * value.pageSize;
-      final newProducts = await _apiService.getProducts(
-        limit: value.pageSize,
-        offset: offset,
+      final newProducts = await PerformanceMetrics.instance.measureAsync(
+        'load_more_products',
+        () => _apiService.getProducts(
+          limit: value.pageSize,
+          offset: offset,
+        ),
       );
+      
+      PerformanceMetrics.instance.trackApiCall('products_pagination');
       
       final allProducts = [...value.products, ...newProducts];
       
@@ -190,7 +201,13 @@ class ProductProvider extends ValueNotifier<ProductState> {
   /// As categorias são usadas para filtrar produtos na interface
   Future<void> loadCategories([BuildContext? context]) async {
     try {
-      final categories = await _apiService.getCategories();
+      final categories = await PerformanceMetrics.instance.measureAsync(
+        'load_categories',
+        () => _apiService.getCategories(),
+      );
+      
+      PerformanceMetrics.instance.trackApiCall('categories');
+      
       value = value.copyWith(
         categories: categories,
         categoriesError: null,
@@ -219,7 +236,10 @@ class ProductProvider extends ValueNotifier<ProductState> {
     
     value = value.copyWith(isLoadingFavorites: true);
     
-    final result = await _favoritesManager!.loadFavorites();
+    final result = await PerformanceMetrics.instance.measureAsync(
+      'load_favorites',
+      () => _favoritesManager!.loadFavorites(),
+    );
     
     if (result.isSuccess) {
       value = value.copyWith(
@@ -271,14 +291,18 @@ class ProductProvider extends ValueNotifier<ProductState> {
   /// 
   /// [query] - Texto a ser buscado nos produtos
   void searchProducts(String query) {
+    PerformanceMetrics.instance.trackSearchAction(query);
+    
     // Atualiza imediatamente o searchQuery para mostrar feedback visual
     value = value.copyWith(searchQuery: query);
     
     // Aplica debounce apenas na filtragem para otimizar performance
     _searchDebouncer.run(() {
-      value = value.copyWith(
-        filteredProducts: _filterProducts(value.products),
-      );
+      PerformanceMetrics.instance.measure('search_filter', () {
+        value = value.copyWith(
+          filteredProducts: _filterProducts(value.products),
+        );
+      });
     });
   }
 
@@ -314,9 +338,19 @@ class ProductProvider extends ValueNotifier<ProductState> {
     
     final isFavorite = value.favoriteIds.contains(product.id);
     
-    final result = isFavorite 
-      ? await _favoritesManager!.removeFromFavorites(product.id, context)
-      : await _favoritesManager!.addToFavorites(product, context);
+    final result = await PerformanceMetrics.instance.measureAsync(
+      'toggle_favorite',
+      () async {
+        return isFavorite 
+          ? await _favoritesManager!.removeFromFavorites(product.id, context)
+          : await _favoritesManager!.addToFavorites(product, context);
+      },
+    );
+    
+    PerformanceMetrics.instance.trackFavoriteAction(
+      product.id, 
+      isFavorite ? 'remove' : 'add'
+    );
     
     if (result.isSuccess) {
       _updateFavoritesState(product, result.isFavorite!);
