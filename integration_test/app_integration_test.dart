@@ -242,9 +242,7 @@ void main() {
         ); // Aguardar carregamento
 
         final finalProductCount = find.byType(Card).evaluate().length;
-        // Verificar se mantém pelo menos os produtos iniciais
         expect(finalProductCount, greaterThanOrEqualTo(initialProductCount));
-        // Verificar se a lista ainda está presente
         expect(find.byType(ListView), findsOneWidget);
       });
 
