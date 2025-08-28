@@ -11,11 +11,10 @@ class ErrorScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Imagem de erro centralizada
             Image.asset(
               'assets/images/erro.png',
-              width: 120,
-              height: 120,
+              width: 200,
+              height: 200,
               errorBuilder: (context, error, stackTrace) {
                 return const Icon(
                   Icons.wifi_off,
@@ -24,34 +23,24 @@ class ErrorScreen extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: 40),
-            // Botão GO HOME
-            ElevatedButton(
-              onPressed: () {
+            const Spacer(),
+            GestureDetector(
+              onTap: () {
                 Navigator.of(context).pushNamedAndRemoveUntil(
                   '/',
                   (route) => false,
                 );
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 16,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
               child: const Text(
                 'GO HOME',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  color: Colors.blue,
                 ),
               ),
             ),
+            const SizedBox(height: 60),
           ],
         ),
       ),
