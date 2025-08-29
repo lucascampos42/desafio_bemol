@@ -282,29 +282,6 @@ GET /products/{id}
 **Resposta (200 OK):** Objeto produto individual
 **Resposta (404 Not Found):** Produto não encontrado
 
-#### 3. Categorias
-```http
-GET /products/categories
-```
-
-**Resposta (200 OK):**
-```json
-[
-  "electronics",
-  "jewelery",
-  "men's clothing",
-  "women's clothing"
-]
-```
-
-#### 4. Produtos por Categoria
-```http
-GET /products/category/{category}
-```
-
-**Parâmetros:**
-- `category` (obrigatório): Nome da categoria
-
 ### Códigos de Status
 - **200 OK**: Requisição bem-sucedida
 - **404 Not Found**: Recurso não encontrado
