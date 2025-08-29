@@ -217,7 +217,7 @@ flutter test integration_test/app_integration_test.dart
 - ✅ Tratamento de erros
 - ✅ Performance com muitos produtos
 
-⚠️ **Observação**: Nem todos os testes de integração estão passando devido a limitações de dados da API ou compatibilidade. Eles foram adicionados para demonstrar a capacidade de escrita de testes de integração.
+⚠️ **Observação**: Nem todos os testes de integração estão passando devido a limitações de dados da API ou compatibilidade. Eles foram adicionados para demonstrar a capacidade de escrita de testes de integração. ⚠️
 
 ### Executar Todos os Testes
 ```bash

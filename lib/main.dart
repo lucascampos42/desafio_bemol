@@ -19,7 +19,7 @@ Future<void> _initializeServices() async {
     
     ApiService.instance;
     
-    // Initialize performance metrics
+    // Inicializa métricas de performance
     PerformanceMetrics.instance.logEvent('app_startup', {'timestamp': DateTime.now().toIso8601String()});
     
     debugPrint('✅ Services initialized successfully');
@@ -38,8 +38,8 @@ class DesafioBemolApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
-      // Example of how to view performance metrics
-      // Uncomment the lines below to see report in console
+      // Exemplo de como visualizar métricas de performance
+      // Descomente as linhas abaixo para ver o relatório no console
       // builder: (context, child) {
       //   WidgetsBinding.instance.addPostFrameCallback((_) {
       //     Future.delayed(const Duration(seconds: 10), () {

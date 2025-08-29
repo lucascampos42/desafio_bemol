@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../core/utils/constants.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/utils/constants.dart';
 import '../../core/utils/animations.dart';
 
 class LoadingWidget extends StatelessWidget {
@@ -72,7 +72,7 @@ class CustomErrorWidget extends StatelessWidget {
                       color: AppTheme.errorColor,
                     ),
             ),
-            // Only show texts if NOT a connection error
+            // Exibe textos apenas se NÃO for um erro de conexão
             if (!_isConnectionError) ...[
               const SizedBox(height: AppConstants.defaultPadding),
               Text(
@@ -119,7 +119,7 @@ class EmptyWidget extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    // If useErrorImageOnly is true, show only the erro.png image
+    // Se useErrorImageOnly for true, exibe apenas a imagem erro.png
     if (useErrorImageOnly) {
       return Center(
         child: Image.asset(

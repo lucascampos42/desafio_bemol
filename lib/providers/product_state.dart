@@ -35,7 +35,7 @@ class ProductState {
     required this.categories,
   });
 
-  /// Initial state
+  /// Estado inicial
   factory ProductState.initial() {
     return const ProductState(
       products: [],
@@ -56,7 +56,7 @@ class ProductState {
     );
   }
 
-  /// Creates copy of state with modifications
+  /// Cria uma cópia do estado com modificações
   ProductState copyWith({
     List<Product>? products,
     List<Product>? filteredProducts,
@@ -96,22 +96,22 @@ class ProductState {
     );
   }
 
-  /// Checks if has products
+  /// Verifica se há produtos
   bool get hasProducts => products.isNotEmpty;
 
-  /// Checks if has favorites
+  /// Verifica se há favoritos
   bool get hasFavorites => favorites.isNotEmpty;
 
-  /// Checks if has error
+  /// Verifica se há erro
   bool get hasError => error != null;
 
-  /// Checks if has categories error
+  /// Verifica se há erro de categorias
   bool get hasCategoriesError => categoriesError != null;
 
-  /// Checks if is searching
+  /// Verifica se está pesquisando
   bool get isSearching => searchQuery.isNotEmpty;
 
-  /// Checks if has category filter
+  /// Verifica se há filtro de categoria
   bool get hasCategory => selectedCategory != null;
 
   @override
