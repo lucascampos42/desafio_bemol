@@ -117,7 +117,7 @@ class _ProductCardState extends State<ProductCard>
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            'Image\nunavailable',
+                            'Imagem\nindisponível',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 9,
@@ -172,7 +172,7 @@ class _ProductCardState extends State<ProductCard>
                                         ),
                                         const SizedBox(width: 4),
                                         Text(
-                                          '(${widget.product.rating.count} reviews)',
+                                          '(${widget.product.rating.count} avaliações)',
                                           style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w600,
@@ -206,7 +206,7 @@ class _ProductCardState extends State<ProductCard>
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // Preço
+
                                   AppAnimations.fadeIn(
                                     duration: AppAnimations.slow,
                                     child: Text(
