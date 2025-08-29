@@ -1,0 +1,222 @@
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import '../models/product.dart';
+import '../../core/utils/constants.dart';
+import '../../core/utils/logger.dart';
+
+class ApiService {
+  static ApiService? _instance;
+  late final Dio _dio;
+  
+  ApiService._internal([Dio? dio]) {
+    if (dio != null) {
+      _dio = dio;
+    } else {
+      _initializeDio();
+    }
+  }
+  
+  factory ApiService([Dio? dio]) {
+    if (dio != null) {
+      // Para testes, sempre cria nova instância com Dio injetado
+      return ApiService._internal(dio);
+    }
+    _instance ??= ApiService._internal();
+    return _instance!;
+  }
+  
+  static ApiService get instance {
+    _instance ??= ApiService._internal();
+    return _instance!;
+  }
+  
+  static void resetInstance() {
+    _instance = null;
+  }
+  
+  void _initializeDio() {
+    _dio = Dio(BaseOptions(
+      baseUrl: AppConstants.baseUrl,
+      connectTimeout: Duration(milliseconds: AppConstants.connectionTimeout),
+      receiveTimeout: Duration(milliseconds: AppConstants.receiveTimeout),
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ));
+
+    if (kDebugMode) {
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        logPrint: (obj) => AppLogger.debug(obj.toString(), LogTags.api),
+        error: true,
+        requestHeader: true,
+        responseHeader: true,
+      ));
+    }
+
+    _dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) {
+        AppLogger.info('Request: ${options.method} ${options.path}', LogTags.api);
+        handler.next(options);
+      },
+      onResponse: (response, handler) {
+        AppLogger.success('Response: ${response.statusCode} ${response.requestOptions.path}', LogTags.api);
+        handler.next(response);
+      },
+      onError: (error, handler) {
+        AppLogger.error('API Error: ${error.message}', error, null, LogTags.api);
+        handler.next(error);
+      },
+    ));
+  }
+  
+  /// Loads products with pagination support
+  /// 
+  /// [limit] - Maximum number of products to return (default: 20)
+  /// [offset] - Number of products to skip (for pagination)
+  Future<List<Product>> getProducts({int limit = 20, int offset = 0}) async {
+    try {
+      final queryParams = {
+        'limit': limit.toString(),
+      };
+      
+      // fakestoreapi.com only supports limit, not offset
+      // To simulate pagination, we'll use limit and then filter on client
+      final response = await _dio.get(
+        AppConstants.productsEndpoint,
+        queryParameters: queryParams,
+      );
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        final allProducts = data.map((json) => Product.fromJson(json)).toList();
+        
+        // Simulate pagination on client since API doesn't support offset
+        final startIndex = offset;
+        final endIndex = (startIndex + limit).clamp(0, allProducts.length);
+        
+        final products = startIndex < allProducts.length 
+            ? allProducts.sublist(startIndex, endIndex)
+            : <Product>[];
+            
+        AppLogger.success('${products.length} products loaded (offset: $offset, limit: $limit)', LogTags.api);
+        return products;
+      } else {
+        throw ApiException('Error loading products: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Unexpected error: $e');
+    }
+  }
+  
+  /// Loads all products (for internal use)
+  Future<List<Product>> getAllProducts() async {
+    try {
+      final response = await _dio.get(AppConstants.productsEndpoint);
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        final products = data.map((json) => Product.fromJson(json)).toList();
+        AppLogger.success('${products.length} products loaded successfully', LogTags.api);
+        return products;
+      } else {
+        throw ApiException('Error loading products: ${response.statusCode}');
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Unexpected error: $e');
+    }
+  }
+  
+  Future<Product> getProductById(int id) async {
+    try {
+      final response = await _dio.get('${AppConstants.productsEndpoint}/$id');
+      
+      if (response.statusCode == 200) {
+        final product = Product.fromJson(response.data);
+        AppLogger.success('Product ${product.title} loaded successfully', LogTags.api);
+        return product;
+      } else {
+        throw ApiException('Product not found');
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Unexpected error: $e');
+    }
+  }
+  
+  Future<List<Product>> getProductsByCategory(String category) async {
+    try {
+      final response = await _dio.get('${AppConstants.productsEndpoint}/category/$category');
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        final products = data.map((json) => Product.fromJson(json)).toList();
+        AppLogger.success('${products.length} products from category "$category" loaded', LogTags.api);
+        return products;
+      } else {
+        throw ApiException('Error loading products from category');
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Unexpected error: $e');
+    }
+  }
+  
+  Future<List<String>> getCategories() async {
+    try {
+      final response = await _dio.get('${AppConstants.productsEndpoint}/categories');
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> data = response.data;
+        final categories = data.cast<String>();
+        AppLogger.success('${categories.length} categories loaded: ${categories.join(", ")}', LogTags.api);
+        return categories;
+      } else {
+        throw ApiException('Error loading categories');
+      }
+    } on DioException catch (e) {
+      throw _handleDioError(e);
+    } catch (e) {
+      throw ApiException('Unexpected error: $e');
+    }
+  }
+  
+  /// Handles Dio errors
+  ApiException _handleDioError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.badResponse:
+        if (e.response?.statusCode == 404) {
+          return ApiException(AppConstants.notFoundError);
+        }
+        return ApiException('Server error: ${e.response?.statusCode}');
+      case DioExceptionType.cancel:
+        return ApiException('Request cancelled');
+      case DioExceptionType.connectionTimeout:
+        return ApiException('Connection timeout exceeded');
+      case DioExceptionType.receiveTimeout:
+        return ApiException('Receive timeout exceeded');
+      case DioExceptionType.sendTimeout:
+        return ApiException('Send timeout exceeded');
+      case DioExceptionType.unknown:
+      default:
+        return ApiException(AppConstants.genericError);
+    }
+  }
+}
+
+class ApiException implements Exception {
+  final String message;
+  
+  ApiException(this.message);
+  
+  @override
+  String toString() => 'ApiException: $message';
+}
