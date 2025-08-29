@@ -4,7 +4,6 @@ import '../../../providers/product_provider.dart';
 import '../../widgets/search_bar_widget.dart';
 import '../../widgets/responsive_product_list_widget.dart';
 import '../../widgets/favorites_badge_widget.dart';
-import '../../widgets/category_error_widget.dart';
 import '../product_detail/product_detail_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../error/error_screen.dart';
@@ -39,9 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await _productProvider.ensureInitialized();
       await _productProvider.initializeWithApi();
-      if (mounted) {
-        await _productProvider.loadCategories(context);
-      }
     } catch (e) {
       debugPrint('Error during app initialization: $e');
       if (mounted) {
@@ -187,13 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           isSearching: state.isSearching,
                           onClear: _clearFilters,
                         ),
-                        // Exibe erro de categoria, se houver
-                        if (state.hasCategoriesError)
-                          CategoryErrorWidget(
-                            message: state.categoriesError!,
-                            onRetry: () => _productProvider.loadCategories(context),
-                            isCompact: true,
-                          ),
+
                         Expanded(
                           child: ResponsiveProductListWidget(
                             state: state,

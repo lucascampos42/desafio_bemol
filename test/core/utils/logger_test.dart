@@ -66,7 +66,6 @@ void main() {
         expect(LogTags.provider, isNotEmpty);
         expect(LogTags.ui, isNotEmpty);
         expect(LogTags.favorites, isNotEmpty);
-        expect(LogTags.categories, isNotEmpty);
         expect(LogTags.search, isNotEmpty);
       });
 
@@ -77,7 +76,6 @@ void main() {
           LogTags.provider,
           LogTags.ui,
           LogTags.favorites,
-          LogTags.categories,
           LogTags.search,
         ];
         
@@ -91,7 +89,6 @@ void main() {
         expect(LogTags.provider, equals('PROVIDER'));
         expect(LogTags.ui, equals('UI'));
         expect(LogTags.favorites, equals('FAVORITES'));
-        expect(LogTags.categories, equals('CATEGORIES'));
         expect(LogTags.search, equals('SEARCH'));
       });
     });

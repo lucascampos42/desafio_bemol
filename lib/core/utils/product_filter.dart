@@ -9,7 +9,6 @@ import '../../data/models/product.dart';
 /// 
 /// Todos os métodos são case-insensitive para melhor experiência do usuário
 /// 
-/// Nota: A API não fornece filtro por categoria, apenas busca por título
 class ProductFilter {
   /// Filtra produtos por texto de busca no título
   /// 
@@ -54,8 +53,6 @@ class ProductFilter {
 
   
   /// Filtra produtos por múltiplos critérios (apenas busca por título e filtros de preço/rating)
-  /// 
-  /// Nota: Filtro por categoria removido pois a API não suporta esta funcionalidade
   static List<Product> filterProductsAdvanced(
     List<Product> products, {
     String? searchQuery,
@@ -87,8 +84,6 @@ class ProductFilter {
   }
   
   /// Busca produtos por múltiplos campos (título e descrição)
-  /// 
-  /// Nota: Busca por categoria removida pois a API não suporta filtro por categoria
   static List<Product> searchInAllFields(
     List<Product> products,
     String searchQuery,

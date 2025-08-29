@@ -39,10 +39,8 @@ void main() {
 
     group('Rendering', () {
       testWidgets('deve renderizar todos os elementos do produto', (tester) async {
-        // Arrange & Act
         await tester.pumpWidget(createTestWidget());
 
-        // Assert
         expect(find.textContaining('Produto Teste'), findsOneWidget);
         expect(find.textContaining('29'), findsOneWidget);
         expect(find.textContaining('4.5'), findsOneWidget);
@@ -51,23 +49,18 @@ void main() {
       });
 
       testWidgets('deve renderizar ícone de favorito vazio quando não é favorito', (tester) async {
-        // Act
         await tester.pumpWidget(createTestWidget(isFavorite: false));
 
-        // Assert
         expect(find.byType(ProductCard), findsOneWidget);
       });
 
       testWidgets('deve renderizar ícone de favorito preenchido quando é favorito', (tester) async {
-        // Act
         await tester.pumpWidget(createTestWidget(isFavorite: true));
 
-        // Assert
         expect(find.byType(ProductCard), findsOneWidget);
       });
 
       testWidgets('deve truncar título longo corretamente', (tester) async {
-        // Arrange
         final productWithLongTitle = Product(
           id: 1,
           title: 'Este é um título muito longo que deveria ser truncado para não quebrar o layout do card',
@@ -78,17 +71,14 @@ void main() {
           rating: Rating(rate: 4.5, count: 100),
         );
 
-        // Act
         await tester.pumpWidget(createTestWidget(product: productWithLongTitle));
 
-        // Assert
         expect(find.byType(ProductCard), findsOneWidget);
       });
     });
 
     group('Interactions', () {
       testWidgets('deve aceitar callbacks onTap e onFavoriteToggle', (tester) async {
-        // Arrange
         bool tapCalled = false;
         bool favoriteToggleCalled = false;
         
@@ -100,13 +90,11 @@ void main() {
           favoriteToggleCalled = true;
         }
 
-        // Act
         await tester.pumpWidget(createTestWidget(
           onTap: onTap,
           onFavoriteToggle: onFavoriteToggle,
         ));
 
-        // Assert - Verifica se o widget foi criado com os callbacks
         expect(find.byType(ProductCard), findsOneWidget);
         
         // Simula os callbacks diretamente
@@ -120,7 +108,6 @@ void main() {
 
     group('Edge Cases', () {
       testWidgets('deve lidar com preço zero', (tester) async {
-        // Arrange
         final productWithZeroPrice = Product(
           id: 1,
           title: 'Produto Grátis',
@@ -131,15 +118,12 @@ void main() {
           rating: Rating(rate: 4.5, count: 100),
         );
 
-        // Act
         await tester.pumpWidget(createTestWidget(product: productWithZeroPrice));
 
-        // Assert
         expect(find.byType(ProductCard), findsOneWidget);
       });
 
       testWidgets('deve lidar com rating zero', (tester) async {
-        // Arrange
         final productWithZeroRating = Product(
           id: 1,
           title: 'Produto Sem Rating',
@@ -150,15 +134,12 @@ void main() {
           rating: Rating(rate: 0.0, count: 0),
         );
 
-        // Act
         await tester.pumpWidget(createTestWidget(product: productWithZeroRating));
 
-        // Assert
         expect(find.byType(ProductCard), findsOneWidget);
       });
 
       testWidgets('deve lidar com categoria vazia', (tester) async {
-        // Arrange
         final productWithEmptyCategory = Product(
           id: 1,
           title: 'Produto Sem Categoria',
@@ -169,15 +150,12 @@ void main() {
           rating: Rating(rate: 4.5, count: 100),
         );
 
-        // Act
         await tester.pumpWidget(createTestWidget(product: productWithEmptyCategory));
 
-        // Assert
         expect(find.byType(ProductCard), findsOneWidget);
       });
 
       testWidgets('deve lidar com título vazio', (tester) async {
-        // Arrange
         final productWithEmptyTitle = Product(
           id: 1,
           title: '',
@@ -188,20 +166,16 @@ void main() {
           rating: Rating(rate: 4.5, count: 100),
         );
 
-        // Act
         await tester.pumpWidget(createTestWidget(product: productWithEmptyTitle));
 
-        // Assert
         expect(find.byType(ProductCard), findsOneWidget);
       });
     });
 
     group('Performance', () {
       testWidgets('deve renderizar rapidamente com muitos produtos', (tester) async {
-        // Arrange
         final stopwatch = Stopwatch()..start();
         
-        // Act
         await tester.pumpWidget(
           MaterialApp(
             home: Scaffold(
@@ -228,7 +202,6 @@ void main() {
         
         stopwatch.stop();
 
-        // Assert
         expect(stopwatch.elapsedMilliseconds, lessThan(1000));
         expect(find.byType(ProductCard), findsWidgets);
       });

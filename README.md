@@ -12,7 +12,6 @@ Aplicativo desenvolvido em **Flutter** que consome a [Fake Store API](https://fa
 ## 🚀 Funcionalidades
 - ✅ Exibir lista de produtos com nome, preço, imagem, avaliação e favoritos
 - ✅ Barra de busca em tempo real (case-insensitive)
-- ✅ Filtros por categoria com chips interativos
 - ✅ Scroll infinito para carregamento de mais produtos
 - ✅ Tela de detalhes com informações completas
 - ✅ Tela de favoritos (persistidos em armazenamento local)
@@ -212,7 +211,6 @@ flutter test integration_test/app_integration_test.dart
 - ✅ Adição/remoção de favoritos
 - ✅ Persistência de dados
 - ✅ Busca em tempo real
-- ✅ Filtros por categoria
 - ✅ Scroll infinito
 - ✅ Tratamento de erros
 - ✅ Performance com muitos produtos

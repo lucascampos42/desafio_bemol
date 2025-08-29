@@ -52,7 +52,6 @@ void main() {
         currentPage: 1,
         pageSize: 10,
         searchQuery: '',
-        categories: [],
       );
 
       await tester.pumpWidget(

@@ -13,7 +13,6 @@ class ProductDescriptionWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Categoria
         Row(
           children: [
             Image.asset(

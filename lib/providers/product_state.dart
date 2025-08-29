@@ -12,9 +12,7 @@ class ProductState {
   final int currentPage;
   final int pageSize;
   final String? error;
-  final String? categoriesError;
   final String searchQuery;
-  final List<String> categories;
 
   const ProductState({
     required this.products,
@@ -28,10 +26,7 @@ class ProductState {
     required this.currentPage,
     required this.pageSize,
     this.error,
-    this.categoriesError,
     required this.searchQuery,
-
-    required this.categories,
   });
 
   /// Estado inicial
@@ -48,10 +43,7 @@ class ProductState {
       currentPage: 0,
       pageSize: 10,
       error: null,
-      categoriesError: null,
       searchQuery: '',
-
-      categories: [],
     );
   }
 
@@ -69,11 +61,7 @@ class ProductState {
     int? pageSize,
     String? error,
     bool clearError = false,
-    String? categoriesError,
-    bool clearCategoriesError = false,
     String? searchQuery,
-
-    List<String>? categories,
   }) {
     return ProductState(
       products: products ?? this.products,
@@ -87,10 +75,7 @@ class ProductState {
       currentPage: currentPage ?? this.currentPage,
       pageSize: pageSize ?? this.pageSize,
       error: clearError ? null : (error ?? this.error),
-      categoriesError: clearCategoriesError ? null : (categoriesError ?? this.categoriesError),
       searchQuery: searchQuery ?? this.searchQuery,
-
-      categories: categories ?? this.categories,
     );
   }
 
@@ -102,9 +87,6 @@ class ProductState {
 
   /// Verifica se há erro
   bool get hasError => error != null;
-
-  /// Verifica se há erro de categorias
-  bool get hasCategoriesError => categoriesError != null;
 
   /// Verifica se está pesquisando
   bool get isSearching => searchQuery.isNotEmpty;
@@ -126,10 +108,7 @@ class ProductState {
         other.currentPage == currentPage &&
         other.pageSize == pageSize &&
         other.error == error &&
-        other.categoriesError == categoriesError &&
-        other.searchQuery == searchQuery &&
-
-        other.categories == categories;
+        other.searchQuery == searchQuery;
   }
 
   @override
@@ -146,10 +125,7 @@ class ProductState {
       currentPage,
       pageSize,
       error,
-      categoriesError,
       searchQuery,
-
-      categories,
     );
   }
 

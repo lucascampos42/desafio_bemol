@@ -5,7 +5,6 @@ import '../data/local/local_storage.dart';
 import '../core/utils/helpers.dart';
 import '../core/utils/constants.dart';
 import '../core/utils/logger.dart';
-import '../core/utils/toast_helper.dart';
 import '../core/utils/error_handler.dart';
 import '../core/utils/product_filter.dart';
 import '../core/managers/favorites_manager.dart';
@@ -91,7 +90,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
     await ensureInitialized();
     if (value.products.isEmpty) {
       await loadProducts();
-      await loadCategories();
     }
   }
 
@@ -100,7 +98,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   /// Este método:
   /// - Faz requisição para a API de produtos
   /// - Atualiza o estado com os produtos recebidos
-  /// - Aplica filtros baseados na busca e categoria selecionada
+  /// - Aplica filtros baseados na busca por texto
   /// - Trata erros de rede e exibe feedback ao usuário
   /// - Resetar paginação para primeira página
   /// 
@@ -194,44 +192,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
 
-  /// Carrega categorias disponíveis da API
-  /// 
-  /// Este método:
-  /// - Busca todas as categorias de produtos disponíveis
-  /// - Atualiza o estado com a lista de categorias
-  /// - Trata erros de rede com fallback gracioso
-  /// 
-  /// As categorias são usadas para filtrar produtos na interface
-  Future<void> loadCategories([BuildContext? context]) async {
-    try {
-      final categories = await PerformanceMetrics.instance.measureAsync(
-        'load_categories',
-        () => _apiService.getCategories(),
-      );
-      
-      PerformanceMetrics.instance.trackApiCall('categories', 'success');
-      
-      value = value.copyWith(
-        categories: categories,
-        categoriesError: null,
-      );
-      AppLogger.success('${categories.length} categorias carregadas', LogTags.categories);
-    } catch (e) {
-      AppLogger.warning('Falha ao carregar categorias - continuando sem filtros', LogTags.categories);
-      
-      final errorInfo = ErrorHandler.handleProductLoadError(e);
-      
-      // Não é um erro crítico, mas informa o usuário sutilmente
-      value = value.copyWith(
-        categories: [], // Lista vazia para evitar null
-        categoriesError: errorInfo.message
-      );
-      
-      if (context != null && context.mounted) {
-        ToastHelper.showWarning(context, errorInfo.message);
-      }
-    }
-  }
+
 
   Future<void> loadFavorites() async {
     await ensureInitialized();
@@ -283,15 +244,11 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Realiza busca em tempo real nos produtos carregados
-  /// 
   /// Este método:
   /// - Atualiza a query de busca no estado
   /// - Aplica filtro de texto nos títulos dos produtos
-  /// - Combina com filtro de categoria se ativo
   /// - Atualiza a lista filtrada automaticamente
-  /// 
   /// A busca é case-insensitive e busca por substring no título
-  /// 
   /// [query] - Texto a ser buscado nos produtos
   void searchProducts(String query) {
     PerformanceMetrics.instance.trackSearchAction(query);
@@ -398,12 +355,10 @@ class ProductProvider extends ValueNotifier<ProductState> {
     await Future.wait([
       loadProducts(context),
       loadFavorites(),
-      loadCategories(context),
     ]);
   }
 
   /// Verifica se deve carregar mais produtos baseado na posição do scroll
-  /// 
   /// [scrollController] - Controller do scroll para verificar posição
   /// [threshold] - Distância do final para começar a carregar (padrão: 200px)
   bool shouldLoadMore(ScrollController scrollController, {double threshold = 200.0}) {
@@ -423,11 +378,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   /// 
   /// Este método utiliza [ProductFilter] para:
   /// - Filtrar por texto de busca (título do produto)
-  /// - Filtrar por categoria selecionada
-  /// - Combinar múltiplos filtros quando aplicável
-  /// 
   /// [products] - Lista de produtos para filtrar
-  /// 
   /// Retorna lista filtrada baseada nos critérios ativos
   List<Product> _filterProducts(List<Product> products) {
     return ProductFilter.filterProducts(

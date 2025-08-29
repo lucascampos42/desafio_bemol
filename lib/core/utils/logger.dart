@@ -49,6 +49,6 @@ class LogTags {
   static const String ui = 'UI';
   static const String favorites = 'FAVORITES';
   static const String search = 'SEARCH';
-  static const String categories = 'CATEGORIES';
+
   static const String performance = 'PERFORMANCE';
 }

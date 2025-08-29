@@ -151,43 +151,9 @@ class ApiService {
     }
   }
   
-  Future<List<Product>> getProductsByCategory(String category) async {
-    try {
-      final response = await _dio.get('${AppConstants.productsEndpoint}/category/$category');
-      
-      if (response.statusCode == 200) {
-        final List<dynamic> data = response.data;
-        final products = data.map((json) => Product.fromJson(json)).toList();
-        AppLogger.success('${products.length} products from category "$category" loaded', LogTags.api);
-        return products;
-      } else {
-        throw ApiException('Error loading products from category');
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiException('Unexpected error: $e');
-    }
-  }
+
   
-  Future<List<String>> getCategories() async {
-    try {
-      final response = await _dio.get('${AppConstants.productsEndpoint}/categories');
-      
-      if (response.statusCode == 200) {
-        final List<dynamic> data = response.data;
-        final categories = data.cast<String>();
-        AppLogger.success('${categories.length} categories loaded: ${categories.join(", ")}', LogTags.api);
-        return categories;
-      } else {
-        throw ApiException('Error loading categories');
-      }
-    } on DioException catch (e) {
-      throw _handleDioError(e);
-    } catch (e) {
-      throw ApiException('Unexpected error: $e');
-    }
-  }
+
   
   /// Handles Dio errors
   ApiException _handleDioError(DioException e) {

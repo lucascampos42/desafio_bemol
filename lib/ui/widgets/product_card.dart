@@ -182,7 +182,6 @@ class _ProductCardState extends State<ProductCard>
                                       ],
                                     ),
                                   ),
-                                  // Botão de favorito animado
                                   AnimatedContainer(
                                     duration: AppAnimations.normal,
                                     decoration: BoxDecoration(
@@ -204,7 +203,6 @@ class _ProductCardState extends State<ProductCard>
                                   ),
                                 ],
                               ),
-                              // Terceira linha: Preço e categoria
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
