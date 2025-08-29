@@ -35,12 +35,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Inicializa o provider carregando dados essenciais
-  /// 
-  /// Este método é responsável por:
-  /// - Inicializar o FavoritesManager
-  /// - Carregar favoritos salvos localmente
-  /// - Tratar erros de inicialização
-  /// 
   /// Deve ser chamado antes de qualquer operação que dependa do estado inicial
   Future<void> _init() async {
     if (_isInitialized) return;
@@ -72,7 +66,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
   
-  /// Carrega favoritos durante a inicialização
+
   Future<void> _loadInitialFavorites() async {
     if (_favoritesManager == null) return;
     
@@ -94,14 +88,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Carrega produtos da API com tratamento de erro robusto
-  /// 
-  /// Este método:
-  /// - Faz requisição para a API de produtos
-  /// - Atualiza o estado com os produtos recebidos
-  /// - Aplica filtros baseados na busca por texto
-  /// - Trata erros de rede e exibe feedback ao usuário
-  /// - Resetar paginação para primeira página
-  /// 
   /// Utiliza [ErrorHandler] para tratamento centralizado de exceções
   Future<void> loadProducts([BuildContext? context]) async {
     if (value.isLoading) return;
@@ -146,12 +132,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Carrega mais produtos para scroll infinito
-  /// 
-  /// Este método:
-  /// - Verifica se há mais produtos para carregar
-  /// - Carrega próxima página de produtos
-  /// - Adiciona novos produtos à lista existente
-  /// - Atualiza estado de paginação
   Future<void> loadMoreProducts([BuildContext? context]) async {
     if (value.isLoadingMore || !value.hasMoreProducts || value.isLoading) return;
     
@@ -220,7 +200,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
 
-  /// Carrega favoritos sem verificar conexão (para tela de favoritos)
+
   Future<void> loadFavoritesOnly() async {
     await ensureInitialized();
     if (_favoritesManager == null) return;
@@ -244,12 +224,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Realiza busca em tempo real nos produtos carregados
-  /// Este método:
-  /// - Atualiza a query de busca no estado
-  /// - Aplica filtro de texto nos títulos dos produtos
-  /// - Atualiza a lista filtrada automaticamente
   /// A busca é case-insensitive e busca por substring no título
-  /// [query] - Texto a ser buscado nos produtos
   void searchProducts(String query) {
     PerformanceMetrics.instance.trackSearchAction(query);
     
@@ -277,16 +252,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Adiciona ou remove produto dos favoritos com persistência local
-  /// 
-  /// Este método:
-  /// - Verifica se o produto já está nos favoritos
-  /// - Delega a operação para o [FavoritesManager]
-  /// - Atualiza o estado local após sucesso
-  /// - Valida a consistência do armazenamento
-  /// - Exibe feedback visual ao usuário
-  /// 
-  /// [product] - Produto a ser adicionado/removido
-  /// [context] - Contexto para exibir toasts (opcional)
+  /// Valida a consistência do armazenamento e exibe feedback visual ao usuário
   Future<void> toggleFavorite(Product product, [BuildContext? context]) async {
     await ensureInitialized();
     if (_favoritesManager == null) {
@@ -318,7 +284,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     }
   }
   
-  /// Atualiza o estado dos favoritos após toggle
+
   void _updateFavoritesState(Product product, bool isFavorite) {
     if (isFavorite) {
       final newFavorites = [...value.favorites, product];
@@ -359,8 +325,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   /// Verifica se deve carregar mais produtos baseado na posição do scroll
-  /// [scrollController] - Controller do scroll para verificar posição
-  /// [threshold] - Distância do final para começar a carregar (padrão: 200px)
   bool shouldLoadMore(ScrollController scrollController, {double threshold = 200.0}) {
     if (!scrollController.hasClients) return false;
     
@@ -374,12 +338,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
   }
 
   
-  /// Aplica filtros de busca e categoria aos produtos
-  /// 
-  /// Este método utiliza [ProductFilter] para:
-  /// - Filtrar por texto de busca (título do produto)
-  /// [products] - Lista de produtos para filtrar
-  /// Retorna lista filtrada baseada nos critérios ativos
+  /// Aplica filtros de busca aos produtos
   List<Product> _filterProducts(List<Product> products) {
     return ProductFilter.filterProducts(
       products,

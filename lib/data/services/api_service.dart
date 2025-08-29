@@ -72,10 +72,7 @@ class ApiService {
     ));
   }
   
-  /// Loads products with pagination support
-  /// 
-  /// [limit] - Maximum number of products to return (default: 20)
-  /// [offset] - Number of products to skip (for pagination)
+  /// Carrega produtos com suporte a paginação
   Future<List<Product>> getProducts({int limit = 20, int offset = 0}) async {
     try {
       final queryParams = {
@@ -113,7 +110,7 @@ class ApiService {
     }
   }
   
-  /// Loads all products (for internal use)
+  /// Carrega todos os produtos (para uso interno)
   Future<List<Product>> getAllProducts() async {
     try {
       final response = await _dio.get(AppConstants.productsEndpoint);
@@ -155,7 +152,7 @@ class ApiService {
   
 
   
-  /// Handles Dio errors
+  /// Trata erros do Dio
   ApiException _handleDioError(DioException e) {
     switch (e.type) {
       case DioExceptionType.badResponse:

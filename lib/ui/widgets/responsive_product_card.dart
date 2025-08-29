@@ -75,7 +75,7 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
     );
   }
 
-  /// Layout horizontal para mobile (mantém o design atual)
+  /// Layout horizontal para mobile
   Widget _buildMobileCard() {
     return AppAnimations.fadeSlideIn(
       child: AnimatedBuilder(
@@ -129,7 +129,7 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
     );
   }
 
-  /// Layout vertical tipo card para desktop/tablet
+  /// Layout vertical para desktop/tablet
   Widget _buildDesktopCard() {
     return AppAnimations.fadeSlideIn(
       child: AnimatedBuilder(
@@ -152,7 +152,7 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Imagem do produto (ocupa mais espaço em desktop)
+                    // Imagem do produto
                     Expanded(
                       flex: 3,
                       child: Container(
@@ -161,7 +161,7 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
                         child: _buildProductImage(double.infinity, double.infinity),
                       ),
                     ),
-                    // Informações do produto
+
                     Expanded(
                       flex: 2,
                       child: Padding(
@@ -212,7 +212,7 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'Image\nunavailable',
+                  'Imagem\nindisponível',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: ResponsiveHelper.isMobile(context) ? 9 : 11,
@@ -244,7 +244,7 @@ class _ResponsiveProductCardState extends State<ResponsiveProductCard>
         ),
         const SizedBox(height: 8),
         if (isDesktop) ...[
-          // Em desktop, mostra mais informações
+
           Text(
             widget.product.category.toUpperCase(),
             style: TextStyle(

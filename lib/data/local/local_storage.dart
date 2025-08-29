@@ -16,28 +16,26 @@ class LocalStorage {
     return _instance!;
   }
   
-  /// Salva lista de produtos favoritos
   Future<bool> saveFavorites(List<Product> favorites) async {
     try {
-      AppLogger.info('Saving ${favorites.length} favorites to SharedPreferences...', LogTags.storage);
+      AppLogger.info('Salvando ${favorites.length} favoritos no SharedPreferences...', LogTags.storage);
       final List<String> favoritesJson = favorites
           .map((product) => jsonEncode(product.toJson()))
           .toList();
       
       final result = await _prefs!.setStringList(AppConstants.favoritesKey, favoritesJson);
-      AppLogger.info('Save result: $result', LogTags.storage);
+      AppLogger.info('Resultado do salvamento: $result', LogTags.storage);
       
       final saved = _prefs!.getStringList(AppConstants.favoritesKey);
-      AppLogger.info('Verification - saved items count: ${saved?.length ?? 0}', LogTags.storage);
+      AppLogger.info('Verificação - itens salvos: ${saved?.length ?? 0}', LogTags.storage);
       
       return result;
     } catch (e) {
-      AppLogger.error('Error saving favorites', e, null, LogTags.storage);
+      AppLogger.error('Erro ao salvar favoritos', e, null, LogTags.storage);
       return false;
     }
   }
   
-  /// Carrega lista de produtos favoritos
   Future<List<Product>> loadFavorites() async {
     try {
       final List<String>? favoritesJson = _prefs!.getStringList(AppConstants.favoritesKey);
@@ -50,12 +48,11 @@ class LocalStorage {
           .map((json) => Product.fromJson(jsonDecode(json)))
           .toList();
     } catch (e) {
-      AppLogger.error('Error loading favorites', e, null, LogTags.storage);
+      AppLogger.error('Erro ao carregar favoritos', e, null, LogTags.storage);
       return [];
     }
   }
   
-  /// Adiciona produto aos favoritos
   Future<bool> addToFavorites(Product product) async {
     try {
       final List<Product> favorites = await loadFavorites();
@@ -68,24 +65,23 @@ class LocalStorage {
       
       return true;
     } catch (e) {
-      AppLogger.error('Error adding favorite', e, null, LogTags.storage);
+      AppLogger.error('Erro ao adicionar favorito', e, null, LogTags.storage);
       return false;
     }
   }
   
-  /// Remove produto dos favoritos
   Future<bool> removeFromFavorites(int productId) async {
     try {
       final List<Product> favorites = await loadFavorites();
       favorites.removeWhere((product) => product.id == productId);
       return await saveFavorites(favorites);
     } catch (e) {
-      AppLogger.error('Error removing favorite', e, null, LogTags.storage);
+      AppLogger.error('Erro ao remover favorito', e, null, LogTags.storage);
       return false;
     }
   }
   
-  /// Verifica se produto está nos favoritos
+
   Future<bool> isFavorite(int productId) async {
     try {
       final List<Product> favorites = await loadFavorites();
@@ -96,7 +92,7 @@ class LocalStorage {
     }
   }
   
-  /// Limpa todos os favoritos
+
   Future<bool> clearFavorites() async {
     try {
       return await _prefs!.remove(AppConstants.favoritesKey);
@@ -106,7 +102,7 @@ class LocalStorage {
     }
   }
   
-  /// Obtém IDs dos favoritos (para performance)
+
   Future<Set<int>> getFavoriteIds() async {
     try {
       final List<Product> favorites = await loadFavorites();

@@ -15,17 +15,15 @@ class PerformanceMetrics {
   final Map<String, List<int>> _durations = {};
   final Map<String, int> _counters = {};
   
-  /// Inicia medição de tempo para uma operação
   void startTimer(String operation) {
     _startTimes[operation] = DateTime.now();
-    AppLogger.debug('⏱️ Started timer for: $operation', LogTags.performance);
+    AppLogger.debug('⏱️ Timer iniciado para: $operation', LogTags.performance);
   }
 
-  /// Para medição de tempo e registra a duração
   void stopTimer(String operation) {
     final startTime = _startTimes[operation];
     if (startTime == null) {
-      AppLogger.warning('Timer not found for operation: $operation', LogTags.performance);
+      AppLogger.warning('Timer não encontrado para operação: $operation', LogTags.performance);
       return;
     }
 
@@ -33,27 +31,25 @@ class PerformanceMetrics {
     _durations.putIfAbsent(operation, () => []).add(duration);
     _startTimes.remove(operation);
 
-    AppLogger.info('⏱️ $operation completed in ${duration}ms', LogTags.performance);
+    AppLogger.info('⏱️ $operation concluído em ${duration}ms', LogTags.performance);
     
     // Registra aviso para operações lentas
     if (duration > 1000) {
-      AppLogger.warning('🐌 Slow operation detected: $operation took ${duration}ms', LogTags.performance);
+      AppLogger.warning('🐌 Operação lenta detectada: $operation levou ${duration}ms', LogTags.performance);
     }
   }
 
-  /// Incrementa contador para uma métrica
   void incrementCounter(String metric) {
     _counters[metric] = (_counters[metric] ?? 0) + 1;
-    AppLogger.debug('📊 Counter $metric: ${_counters[metric]}', LogTags.performance);
+    AppLogger.debug('📊 Contador $metric: ${_counters[metric]}', LogTags.performance);
   }
 
-  /// Registra evento personalizado
   void logEvent(String event, Map<String, dynamic>? data) {
     final logData = data != null ? ' - Data: $data' : '';
-    AppLogger.info('📝 Event: $event$logData', LogTags.performance);
+    AppLogger.info('📝 Evento: $event$logData', LogTags.performance);
   }
 
-  /// Mede tempo de execução de uma função
+  /// Mede tempo de execução de uma função assíncrona
   Future<T> measureAsync<T>(String operation, Future<T> Function() function) async {
     startTimer(operation);
     try {
@@ -62,12 +58,11 @@ class PerformanceMetrics {
       return result;
     } catch (e) {
       stopTimer(operation);
-      AppLogger.error('❌ Error in $operation', e, null, LogTags.performance);
+      AppLogger.error('❌ Erro em $operation', e, null, LogTags.performance);
       rethrow;
     }
   }
 
-  /// Mede tempo de execução de uma função síncrona
   T measure<T>(String operation, T Function() function) {
     startTimer(operation);
     try {
@@ -76,12 +71,11 @@ class PerformanceMetrics {
       return result;
     } catch (e) {
       stopTimer(operation);
-      AppLogger.error('❌ Error in $operation', e, null, LogTags.performance);
+      AppLogger.error('❌ Erro em $operation', e, null, LogTags.performance);
       rethrow;
     }
   }
 
-  /// Alias para compatibilidade
   T measureSync<T>(String operation, T Function() function) {
     return measure(operation, function);
   }
@@ -110,7 +104,7 @@ class PerformanceMetrics {
     );
   }
 
-  /// Obtém todas as estatísticas
+
   Map<String, PerformanceStats> getAllStats() {
     final stats = <String, PerformanceStats>{};
     for (final operation in _durations.keys) {
@@ -122,11 +116,10 @@ class PerformanceMetrics {
     return stats;
   }
 
-  /// Obtém estatísticas em formato compatível com testes
   Map<String, Map<String, dynamic>> getStatistics() {
     final result = <String, Map<String, dynamic>>{};
     
-    // Add timing statistics
+    // Adiciona estatísticas de tempo
     for (final operation in _durations.keys) {
       final durations = _durations[operation]!;
       if (durations.isNotEmpty) {
@@ -139,7 +132,7 @@ class PerformanceMetrics {
       }
     }
     
-    // Add counters
+    // Adiciona contadores
     for (final entry in _counters.entries) {
       result[entry.key] = {
         'count': entry.value,
@@ -149,38 +142,37 @@ class PerformanceMetrics {
     return result;
   }
 
-  /// Obtém todos os contadores
+
   Map<String, int> getAllCounters() => Map.from(_counters);
 
-  /// Gera relatório de performance
   String generateReport() {
     final buffer = StringBuffer();
-    buffer.writeln('📊 PERFORMANCE REPORT');
+    buffer.writeln('📊 RELATÓRIO DE PERFORMANCE');
     buffer.writeln('=' * 50);
     
-    // Timing statistics
-    buffer.writeln('\n⏱️ TIMING STATISTICS:');
+    // Estatísticas de tempo
+    buffer.writeln('\n⏱️ ESTATÍSTICAS DE TEMPO:');
     final stats = getAllStats();
     if (stats.isEmpty) {
-      buffer.writeln('No timing data available');
+      buffer.writeln('Nenhum dado de tempo disponível');
     } else {
       for (final stat in stats.values) {
         buffer.writeln('${stat.operation}:');
-        buffer.writeln('  Count: ${stat.count}');
-        buffer.writeln('  Average: ${stat.averageMs.toStringAsFixed(2)}ms');
-        buffer.writeln('  Median: ${stat.medianMs.toStringAsFixed(2)}ms');
-        buffer.writeln('  Min: ${stat.minMs}ms');
-        buffer.writeln('  Max: ${stat.maxMs}ms');
+        buffer.writeln('  Contagem: ${stat.count}');
+        buffer.writeln('  Média: ${stat.averageMs.toStringAsFixed(2)}ms');
+        buffer.writeln('  Mediana: ${stat.medianMs.toStringAsFixed(2)}ms');
+        buffer.writeln('  Mín: ${stat.minMs}ms');
+        buffer.writeln('  Máx: ${stat.maxMs}ms');
         buffer.writeln('  Total: ${stat.totalMs}ms');
         buffer.writeln('');
       }
     }
 
-    // Counters
-    buffer.writeln('📊 COUNTERS:');
+    // Contadores
+    buffer.writeln('📊 CONTADORES:');
     final counters = getAllCounters();
     if (counters.isEmpty) {
-      buffer.writeln('No counter data available');
+      buffer.writeln('Nenhum dado de contador disponível');
     } else {
       for (final entry in counters.entries) {
         buffer.writeln('${entry.key}: ${entry.value}');
@@ -190,29 +182,26 @@ class PerformanceMetrics {
     return buffer.toString();
   }
 
-  /// Limpa todas as métricas
   void clear() {
     _startTimes.clear();
     _durations.clear();
     _counters.clear();
-    AppLogger.info('🧹 Performance metrics cleared', LogTags.performance);
+    AppLogger.info('🧹 Métricas de performance limpas', LogTags.performance);
   }
 
-  /// Alias para compatibilidade com testes
   void reset() {
     clear();
   }
 
-  /// Monitora uso de memória (apenas em debug)
   void logMemoryUsage(String context) {
     if (kDebugMode) {
       try {
-        // Force garbage collection for more accurate measurement
+        // Força garbage collection para medição mais precisa
         SystemChannels.platform.invokeMethod('SystemChrome.setApplicationSwitcherDescription');
         
-        AppLogger.info('🧠 Memory check at: $context', LogTags.performance);
+        AppLogger.info('🧠 Verificação de memória em: $context', LogTags.performance);
       } catch (e) {
-        AppLogger.debug('Could not get memory info: $e', LogTags.performance);
+        AppLogger.debug('Não foi possível obter informações de memória: $e', LogTags.performance);
       }
     }
   }
@@ -244,9 +233,7 @@ class PerformanceStats {
   }
 }
 
-/// Extensão para facilitar uso das métricas
 extension PerformanceExtension on PerformanceMetrics {
-  /// Métricas específicas para operações de API
   void trackApiCall(String endpoint, String status) {
     incrementCounter('api_calls_total');
     incrementCounter('api_$endpoint');
@@ -256,7 +243,6 @@ extension PerformanceExtension on PerformanceMetrics {
     });
   }
 
-  /// Métricas específicas para operações de UI
   void trackScreenNavigation(String screenName, [Map<String, dynamic>? data]) {
     incrementCounter('screen_navigations_total');
     incrementCounter('navigation_$screenName');
@@ -266,7 +252,6 @@ extension PerformanceExtension on PerformanceMetrics {
     });
   }
 
-  /// Métricas específicas para operações de favoritos
   void trackFavoriteAction(int productId, String action) {
     incrementCounter('favorite_actions_total');
     incrementCounter('favorite_$action');
@@ -276,7 +261,6 @@ extension PerformanceExtension on PerformanceMetrics {
     });
   }
 
-  /// Métricas específicas para busca
   void trackSearchAction(String query) {
     incrementCounter('search_action');
     if (query.isNotEmpty) {
