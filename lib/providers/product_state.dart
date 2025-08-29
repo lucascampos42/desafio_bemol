@@ -14,7 +14,6 @@ class ProductState {
   final String? error;
   final String? categoriesError;
   final String searchQuery;
-  final String? selectedCategory;
   final List<String> categories;
 
   const ProductState({
@@ -31,7 +30,7 @@ class ProductState {
     this.error,
     this.categoriesError,
     required this.searchQuery,
-    this.selectedCategory,
+
     required this.categories,
   });
 
@@ -51,7 +50,7 @@ class ProductState {
       error: null,
       categoriesError: null,
       searchQuery: '',
-      selectedCategory: null,
+
       categories: [],
     );
   }
@@ -73,8 +72,7 @@ class ProductState {
     String? categoriesError,
     bool clearCategoriesError = false,
     String? searchQuery,
-    String? selectedCategory,
-    bool clearCategory = false,
+
     List<String>? categories,
   }) {
     return ProductState(
@@ -91,7 +89,7 @@ class ProductState {
       error: clearError ? null : (error ?? this.error),
       categoriesError: clearCategoriesError ? null : (categoriesError ?? this.categoriesError),
       searchQuery: searchQuery ?? this.searchQuery,
-      selectedCategory: clearCategory ? null : (selectedCategory ?? this.selectedCategory),
+
       categories: categories ?? this.categories,
     );
   }
@@ -111,8 +109,7 @@ class ProductState {
   /// Verifica se está pesquisando
   bool get isSearching => searchQuery.isNotEmpty;
 
-  /// Verifica se há filtro de categoria
-  bool get hasCategory => selectedCategory != null;
+
 
   @override
   bool operator ==(Object other) {
@@ -131,7 +128,7 @@ class ProductState {
         other.error == error &&
         other.categoriesError == categoriesError &&
         other.searchQuery == searchQuery &&
-        other.selectedCategory == selectedCategory &&
+
         other.categories == categories;
   }
 
@@ -151,13 +148,13 @@ class ProductState {
       error,
       categoriesError,
       searchQuery,
-      selectedCategory,
+
       categories,
     );
   }
 
   @override
   String toString() {
-    return 'ProductState(products: ${products.length}, filteredProducts: ${filteredProducts.length}, favorites: ${favorites.length}, isLoading: $isLoading, isLoadingMore: $isLoadingMore, hasMoreProducts: $hasMoreProducts, currentPage: $currentPage, error: $error, searchQuery: $searchQuery, selectedCategory: $selectedCategory)';
+    return 'ProductState(products: ${products.length}, filteredProducts: ${filteredProducts.length}, favorites: ${favorites.length}, isLoading: $isLoading, isLoadingMore: $isLoadingMore, hasMoreProducts: $hasMoreProducts, currentPage: $currentPage, error: $error, searchQuery: $searchQuery)';
   }
 }

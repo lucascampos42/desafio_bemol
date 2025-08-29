@@ -87,17 +87,6 @@ class ErrorHandler {
       type: errorInfo.type
     );
   }
-  
-  /// Trata erros de carregamento de categorias
-  static ErrorInfo handleCategoryLoadError(dynamic error) {
-    final errorInfo = analyzeError(error);
-    return ErrorInfo(
-      message: errorInfo.type == ErrorType.network 
-        ? 'No connection to load categories'
-        : 'Category filters unavailable',
-      type: errorInfo.type
-    );
-  }
 }
 
 /// Informações sobre um erro processado

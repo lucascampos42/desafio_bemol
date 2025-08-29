@@ -35,7 +35,7 @@ class PerformanceMetrics {
 
     AppLogger.info('⏱️ $operation completed in ${duration}ms', LogTags.performance);
     
-    // Log warning for slow operations
+    // Registra aviso para operações lentas
     if (duration > 1000) {
       AppLogger.warning('🐌 Slow operation detected: $operation took ${duration}ms', LogTags.performance);
     }

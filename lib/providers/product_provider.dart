@@ -219,7 +219,7 @@ class ProductProvider extends ValueNotifier<ProductState> {
     } catch (e) {
       AppLogger.warning('Falha ao carregar categorias - continuando sem filtros', LogTags.categories);
       
-      final errorInfo = ErrorHandler.handleCategoryLoadError(e);
+      final errorInfo = ErrorHandler.handleProductLoadError(e);
       
       // Não é um erro crítico, mas informa o usuário sutilmente
       value = value.copyWith(
@@ -315,8 +315,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
     
     value = value.copyWith(
       searchQuery: '',
-      selectedCategory: null,
-      clearCategory: true,
       filteredProducts: value.products,
     );
   }
@@ -435,7 +433,6 @@ class ProductProvider extends ValueNotifier<ProductState> {
     return ProductFilter.filterProducts(
       products,
       searchQuery: value.searchQuery,
-      selectedCategory: value.selectedCategory,
     );
   }
 

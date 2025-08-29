@@ -3,41 +3,28 @@ import '../../data/models/product.dart';
 /// Classe utilitária para filtrar e ordenar produtos de forma eficiente
 /// 
 /// Esta classe fornece métodos estáticos para:
-/// - Filtrar produtos por texto de busca
-/// - Filtrar produtos por categoria
-/// - Combinar múltiplos filtros simultaneamente
+/// - Filtrar produtos por texto de busca no título
 /// - Ordenar produtos por diferentes critérios
 /// - Validar queries de busca
 /// 
 /// Todos os métodos são case-insensitive para melhor experiência do usuário
+/// 
+/// Nota: A API não fornece filtro por categoria, apenas busca por título
 class ProductFilter {
-  /// Filtra produtos aplicando critérios de busca e categoria simultaneamente
+  /// Filtra produtos por texto de busca no título
   /// 
-  /// Este método:
   /// - Aplica filtro de texto no título do produto (case-insensitive)
-  /// - Aplica filtro de categoria se especificada
-  /// - Combina ambos os filtros quando aplicável
   /// - Valida e sanitiza a query de busca
   /// 
   /// [products] - Lista de produtos para filtrar
   /// [searchQuery] - Texto para buscar nos títulos (opcional)
-  /// [selectedCategory] - Categoria para filtrar (opcional)
   /// 
-  /// Retorna lista filtrada baseada nos critérios fornecidos
+  /// Retorna lista filtrada baseada no critério de busca
   static List<Product> filterProducts(
     List<Product> products, {
     String? searchQuery,
-    String? selectedCategory,
   }) {
-    var filtered = products;
-    
-    // Aplica filtro de busca apenas no título
-    filtered = _applySearchFilter(filtered, searchQuery);
-    
-    // Aplica filtro de categoria se selecionada
-    filtered = _applyCategoryFilter(filtered, selectedCategory);
-    
-    return filtered;
+    return _applySearchFilter(products, searchQuery);
   }
   
   /// Filtra produtos por texto de busca no título
@@ -64,40 +51,22 @@ class ProductFilter {
     ).toList();
   }
   
-  /// Filtra produtos por categoria específica
-  /// 
-  /// Compara a categoria do produto com a categoria fornecida
-  /// de forma case-insensitive para maior flexibilidade.
-  /// 
-  /// [products] - Lista de produtos para filtrar
-  /// [selectedCategory] - Nome da categoria para filtrar
-  /// 
-  /// Retorna produtos que pertencem à categoria especificada
-  static List<Product> _applyCategoryFilter(List<Product> products, String? selectedCategory) {
-    if (selectedCategory == null || selectedCategory.isEmpty) {
-      return products;
-    }
-    
-    return products.where((product) => 
-      product.category.toLowerCase() == selectedCategory.toLowerCase()
-    ).toList();
-  }
+
   
-  /// Filtra produtos por múltiplos critérios avançados
+  /// Filtra produtos por múltiplos critérios (apenas busca por título e filtros de preço/rating)
+  /// 
+  /// Nota: Filtro por categoria removido pois a API não suporta esta funcionalidade
   static List<Product> filterProductsAdvanced(
     List<Product> products, {
     String? searchQuery,
-    String? selectedCategory,
     double? minPrice,
     double? maxPrice,
     double? minRating,
-    bool? inStock,
   }) {
     var filtered = products;
     
-    // Filtros básicos
+    // Filtro de busca por título
     filtered = _applySearchFilter(filtered, searchQuery);
-    filtered = _applyCategoryFilter(filtered, selectedCategory);
     
     // Filtro por preço mínimo
     if (minPrice != null) {
@@ -117,7 +86,9 @@ class ProductFilter {
     return filtered;
   }
   
-  /// Busca produtos por múltiplos campos (título, descrição, categoria)
+  /// Busca produtos por múltiplos campos (título e descrição)
+  /// 
+  /// Nota: Busca por categoria removida pois a API não suporta filtro por categoria
   static List<Product> searchInAllFields(
     List<Product> products,
     String searchQuery,
@@ -133,8 +104,7 @@ class ProductFilter {
     
     return products.where((product) => 
       product.title.toLowerCase().contains(query) ||
-      product.description.toLowerCase().contains(query) ||
-      product.category.toLowerCase().contains(query)
+      product.description.toLowerCase().contains(query)
     ).toList();
   }
   
@@ -162,11 +132,7 @@ class ProductFilter {
           ? a.rating.rate.compareTo(b.rating.rate)
           : b.rating.rate.compareTo(a.rating.rate));
         break;
-      case ProductSortCriteria.category:
-        sortedProducts.sort((a, b) => ascending 
-          ? a.category.compareTo(b.category)
-          : b.category.compareTo(a.category));
-        break;
+
     }
     
     return sortedProducts;
@@ -190,5 +156,4 @@ enum ProductSortCriteria {
   name,
   price,
   rating,
-  category,
 }
